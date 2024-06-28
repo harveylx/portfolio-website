@@ -1,0 +1,13 @@
+// Prime Icons override
+
+.p-button:enabled {
+  &:hover {
+    background: none;
+    border: none;
+    color: #FFFFFF;
+  }
+
+  .p-button-icon {
+    font-size: 1.5rem;
+  }
+}
