@@ -103,8 +103,8 @@ You can start using this project locally by running the following command in you
 # pnpm
 pnpm create astro@latest --template satnaing/astro-paper
 
-# npm
-npm create astro@latest -- --template satnaing/astro-paper
+# yarn
+yarn create astro@latest -- --template satnaing/astro-paper
 
 # yarn
 yarn create astro --template satnaing/astro-paper
@@ -161,7 +161,7 @@ All commands are run from the root of the project, from a terminal:
 | `pnpm run sync`                      | Generates TypeScript types for all Astro modules. [Learn more](https://docs.astro.build/en/reference/cli-reference/#astro-sync). |
 | `pnpm run lint`                      | Lint with ESLint                                                                                                                 |
 | `docker compose up -d`               | Run AstroPaper on docker, You can access with the same hostname and port informed on `dev` command.                              |
-| `docker compose run app npm install` | You can run any command above into the docker container.                                                                         |
+| `docker compose run app yarn install` | You can run any command above into the docker container.                                                                         |
 | `docker build -t astropaper .`       | Build Docker image for AstroPaper.                                                                                               |
 | `docker run -p 4321:80 astropaper`   | Run AstroPaper on Docker. The website will be accessible at `http://localhost:4321`.                                             |
 
