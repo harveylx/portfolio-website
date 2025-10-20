@@ -79,21 +79,21 @@ After leaving that role, I did something I should have done earlier: I took time
 
 But more importantly, I started rebuilding my confidence.
 
-My next role was a revelation. Within weeks, I realised something crucial: I had actually learned an enormous amount during those difficult nine months. The technologies and patterns I'd struggled with before suddenly made sense. The concepts I thought I'd failed to grasp were now part of my mental toolkit.
+My next role was a revelation. Within weeks, I realised something crucial: I had actually learnt an enormous amount during those difficult nine months. The technologies and patterns I'd struggled with before suddenly made sense. The concepts I thought I'd failed to grasp were now part of my mental toolkit.
 
 The difference? I was in an environment where questions were genuinely welcomed. Where not knowing something wasn't treated as a character flaw. Where learning was expected, not merely tolerated.
 
-Over the following months, I applied for more senior positions. I studied system design intensively. I worked on side projects that demonstrated the advanced concepts I'd learned. And eventually, I landed my first Senior Software Engineer position at a financial startup.
+Over the following months, I applied for more senior positions. I studied system design intensively. I worked on side projects that demonstrated the advanced concepts I'd learnt. And eventually, I landed my first Senior Software Engineer position at a financial startup.
 
 Today, I architect and maintain 13 microservices implementing Domain-Driven Design principles. I work with event-driven architectures using Pub/Sub. I design complex domain models for financial products. I've achieved 99.9% uptime for critical financial operations. I've led platform modernisation initiatives and mentored other engineers.
 
 I became the engineer I always believed I could be.
 
-## What I Learned About Impostor Syndrome
+## What I learnt About Impostor Syndrome
 
 ![Person at mountain summit representing achievement and growth](@/assets/images/blog/mountain-summit-success.jpg)
 
-Looking back, I've learned several crucial things about impostor syndrome and toxic work environments:
+Looking back, I've learnt several crucial things about impostor syndrome and toxic work environments:
 
 ### 1. The Environment Matters More Than You Think
 
@@ -143,7 +143,7 @@ When I left that toxic environment, I spent months deliberately learning. Not be
 
 **3. Recognise Your Growth**
 
-Keep a record of what you've learned and accomplished. When impostor syndrome strikes (and it will, even years later), you'll have concrete evidence of your capabilities.
+Keep a record of what you've learnt and accomplished. When impostor syndrome strikes (and it will, even years later), you'll have concrete evidence of your capabilities.
 
 **4. Set Boundaries**
 
