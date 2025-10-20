@@ -10,6 +10,9 @@ on:
       - edited
       - synchronize
       - reopened
+    paths:
+      - 'astro-portfolio/**'
+      - '.github/workflows/ci.yml'
   workflow_call:
 
 jobs:
@@ -17,6 +20,9 @@ jobs:
     name: Code standards & build
     runs-on: ubuntu-latest
     timeout-minutes: 3
+    defaults:
+      run:
+        working-directory: astro-portfolio
 
     strategy:
       matrix:
@@ -31,6 +37,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
+          cache-dependency-path: astro-portfolio/yarn.lock
 
       - name: "📦 Install dependencies"
         run: yarn install --frozen-lockfile

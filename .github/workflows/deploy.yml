@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'astro-portfolio/**'
+      - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
 permissions:
@@ -15,6 +18,9 @@ jobs:
     name: Deploy to Cloudflare Pages
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: astro-portfolio
 
     steps:
       - name: "☁️ Checkout repository"
@@ -25,6 +31,7 @@ jobs:
         with:
           node-version: 20
           cache: "yarn"
+          cache-dependency-path: astro-portfolio/yarn.lock
 
       - name: "📦 Install dependencies"
         run: yarn install --frozen-lockfile
@@ -37,4 +44,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=harveysingh-xyz
+          command: pages deploy astro-portfolio/dist --project-name=harveysingh-xyz
