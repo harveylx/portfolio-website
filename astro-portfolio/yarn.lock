@@ -3,9 +3,9 @@
 
 
 "@astrojs/check@^0.9.4":
-  version "0.9.4"
-  resolved "https://registry.yarnpkg.com/@astrojs/check/-/check-0.9.4.tgz#6a5310eca7ba57c8f3bd65c8ea0c7be79106c30f"
-  integrity sha512-IOheHwCtpUfvogHHsvu0AbeRZEnjJg3MopdLddkJE70mULItS/Vh37BHcI00mcOJcH1vhD3odbpvWokpxam7xA==
+  version "0.9.5"
+  resolved "https://registry.yarnpkg.com/@astrojs/check/-/check-0.9.5.tgz#302a2bacda608556185eabdd413ab593b08d2729"
+  integrity sha512-88vc8n2eJ1Oua74yXSGo/8ABMeypfQPGEzuoAx2awL9Ju8cE6tZ2Rz9jVx5hIExHK5gKVhpxfZj4WXm7e32g1w==
   dependencies:
     "@astrojs/language-server" "^2.15.0"
     chokidar "^4.0.1"
@@ -3330,9 +3330,9 @@ p-timeout@^6.1.2:
   integrity sha512-MyIV3ZA/PmyBN/ud8vV9XzwTrNtR4jFrObymZYnZqMmW0zA8Z17vnT0rBgFE/TlohB+YCHqXMgZzb3Csp49vqg==
 
 package-manager-detector@^1.3.0:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/package-manager-detector/-/package-manager-detector-1.4.1.tgz#8f683009e02cc2ca1c4e2c887316075108239189"
-  integrity sha512-dSMiVLBEA4XaNJ0PRb4N5cV/SEP4BWrWZKBmfF+OUm2pQTiZ6DDkKeWaltwu3JRhLoy59ayIkJ00cx9K9CaYTg==
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/package-manager-detector/-/package-manager-detector-1.5.0.tgz#8dcf7b78554047ddf5da453e6ba07ebc915c507e"
+  integrity sha512-uBj69dVlYe/+wxj8JOpr97XfsxH/eumMt6HqjNTmJDf/6NO9s+0uxeOneIz3AsPt2m6y9PqzDzd3ATcU17MNfw==
 
 pagefind@^1.3.0:
   version "1.4.0"
@@ -3780,7 +3780,7 @@ satori@^0.15.2:
     postcss-value-parser "^4.2.0"
     yoga-wasm-web "^0.3.3"
 
-sax@^1.2.4:
+sax@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.4.1.tgz#44cc8988377f126304d3b3fc1010c733b929ef0f"
   integrity sha512-+aWOz7yVScEGoKNd4PA10LZ8sk0A/z5+nXQG5giUO5rprX9jgYsTdov9qCchZiPIZezbZH+jRut8nPodFAX4Jg==
@@ -3854,14 +3854,14 @@ sisteransi@^1.0.5:
   integrity sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==
 
 sitemap@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/sitemap/-/sitemap-8.0.0.tgz#eb6ea48f95787cd680b83683c555d6f6b5a903fd"
-  integrity sha512-+AbdxhM9kJsHtruUF39bwS/B0Fytw6Fr1o4ZAIAEqA6cke2xcoO2GleBw9Zw7nRzILVEgz7zBM5GiTJjie1G9A==
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/sitemap/-/sitemap-8.0.1.tgz#2ba2612089207e7a794f501fd11d7cb080273697"
+  integrity sha512-4Y8ynSMFAy/DadeAeio8Kx4zfC8/0VcKi7TH0I1SazvBcrU2fpJaGoeWsX1FMRaHoe3VGMA53DqVoLErZrtG9Q==
   dependencies:
     "@types/node" "^17.0.5"
     "@types/sax" "^1.2.1"
     arg "^5.0.0"
-    sax "^1.2.4"
+    sax "^1.4.1"
 
 smol-toml@^1.4.2:
   version "1.4.2"
@@ -4247,9 +4247,9 @@ vfile@^6.0.0, vfile@^6.0.3:
     vfile-message "^4.0.0"
 
 vite@^6.3.6:
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-6.4.0.tgz#cc26fce6fc4bb423b3a5e7bbeada7b3cf2d3ac9c"
-  integrity sha512-oLnWs9Hak/LOlKjeSpOwD6JMks8BeICEdYMJBf6P4Lac/pO9tKiv/XhXnAM7nNfSkZahjlCZu9sS50zL8fSnsw==
+  version "6.4.1"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-6.4.1.tgz#afbe14518cdd6887e240a4b0221ab6d0ce733f96"
+  integrity sha512-+Oxm7q9hDoLMyJOYfUYBuHQo+dkAloi33apOPP56pzj+vsdJDzr+j1NISE5pyaAuKL4A3UD34qd0lx5+kfKp2g==
   dependencies:
     esbuild "^0.25.0"
     fdir "^6.4.4"
