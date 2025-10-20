@@ -6,7 +6,7 @@ export const SITE = {
 
   desc: "Senior Software Engineer | Tech Blog & Portfolio", // Your professional tagline
   title: "Harvey Singh",
-  ogImage: "harvey-singh-og.jpg", // Replace with your own OG image
+  ogImage: "og-image.png", // Replace with your own OG image
 
   lightAndDarkMode: true, // Light/dark theme toggle
   postPerIndex: 4, // Number of posts on homepage
