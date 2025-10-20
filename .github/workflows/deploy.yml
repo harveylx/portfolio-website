@@ -20,22 +20,17 @@ jobs:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
 
-      - name: "📦 Install pnpm"
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.11.1
-
       - name: "📦 Setup Node.js"
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "pnpm"
+          cache: "yarn"
 
       - name: "📦 Install dependencies"
-        run: pnpm install
+        run: yarn install --frozen-lockfile
 
       - name: "🚀 Build the project"
-        run: pnpm run build
+        run: yarn build
 
       - name: "🌐 Deploy to Cloudflare Pages"
         uses: cloudflare/wrangler-action@v3
