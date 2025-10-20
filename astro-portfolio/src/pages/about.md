@@ -1,10 +1,7 @@
 ---
 layout: ../layouts/AboutLayout.astro
-title: "About"
+title: "About Me"
 ---
-
-# About Harvey Singh
-
 Software Engineer based in London with 7+ years of experience building scalable distributed systems, financial platforms, and cloud-native applications. Currently architecting microservices for a wealth management platform at Propelle Ltd.
 
 ## Professional Background
