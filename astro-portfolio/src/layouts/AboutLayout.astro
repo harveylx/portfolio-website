@@ -4,6 +4,8 @@ import Footer from "@/components/Footer.astro";
 import Breadcrumb from "@/components/Breadcrumb.astro";
 import Layout from "./Layout.astro";
 import { SITE } from "@/config";
+import { Image } from "astro:assets";
+import meImage from "@/assets/images/me.png";
 
 export interface Props {
   frontmatter: {
@@ -22,7 +24,7 @@ const { frontmatter } = Astro.props;
     <section id="about" class="app-prose mb-28 max-w-app prose-img:border-0">
       <h1 class="text-2xl tracking-wider sm:text-3xl">{frontmatter.title}</h1>
       <div>
-        <img class="mx-auto rounded-full sm:w-1/4" src="/src/assets/images/me.png" alt="me" />
+        <Image src={meImage} alt="me" class="mx-auto rounded-full sm:w-1/4" />
       </div>
       <slot />
     </section>
