@@ -15,7 +15,11 @@ tags:
 
 Three years ago, I was sitting at my desk, tears streaming down my face after a particularly harsh interaction with a colleague. I had just asked what I thought was a reasonable question, only to be met with raised voices and visible frustration. In that moment, I genuinely questioned whether I had chosen the wrong career path. Today, I'm a Senior Software Engineer working on complex distributed systems for a financial platform. This is the story of how I got here.
 
+![Person looking stressed while working at computer](@/assets/images/blog/impostor-syndrome-stressed.jpg)
+
 ## Table of contents
+
+![Crossroads representing a career decision](@/assets/images/blog/career-crossroads.jpg)
 
 ## The Job That Changed Everything (For Better and Worse)
 
@@ -26,6 +30,8 @@ I had a decision to make. The safe choice was obvious, but something about the o
 In hindsight, that decision was both the best and worst thing I could have done.
 
 ## When Learning Becomes a Battlefield
+
+![Developers working together at a computer](@/assets/images/blog/team-coding-pressure.jpg)
 
 The team structure was simple: me, my manager (let's call them Daisy), and an exceptionally gifted senior engineer (let's call them Adam). On paper, this should have been an incredible learning opportunity. Adam was a brilliant engineer who had created many of the tools and practices the company relied on. Daisy had deep domain knowledge, having built much of the system I'd be working on. I was excited to learn from them both.
 
@@ -67,6 +73,8 @@ Eventually, I was let go. In many ways, I saw it coming. But I left that role be
 
 ## The Turning Point
 
+![Sunrise representing a new beginning](@/assets/images/blog/new-beginning-sunrise.jpg)
+
 After leaving that role, I did something I should have done earlier: I took time to properly learn. Not just surface-level tutorials, but deep dives into the concepts I'd been exposed to. Event-driven architectures. Domain-Driven Design. System design patterns. Microservices architecture.
 
 But more importantly, I started rebuilding my confidence.
@@ -82,6 +90,8 @@ Today, I architect and maintain 13 microservices implementing Domain-Driven Desi
 I became the engineer I always believed I could be.
 
 ## What I Learned About Impostor Syndrome
+
+![Person at mountain summit representing achievement and growth](@/assets/images/blog/mountain-summit-success.jpg)
 
 Looking back, I've learned several crucial things about impostor syndrome and toxic work environments:
 
