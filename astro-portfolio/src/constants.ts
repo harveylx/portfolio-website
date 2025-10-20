@@ -69,9 +69,16 @@ export const SHARE_LINKS: Social[] = [
     icon: IconPinterest,
   },
   {
+    name: "LinkedIn",
+    href: "https://www.linkedin.com/sharing/share-offsite/?url=",
+    linkTitle: `Share this post on LinkedIn`,
+    icon: IconLinkedin,
+  },
+  {
     name: "Mail",
     href: "mailto:?subject=See%20this%20post&body=",
     linkTitle: `Share this post via email`,
     icon: IconMail,
   },
 ] as const;
+
