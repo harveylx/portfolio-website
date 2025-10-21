@@ -43,7 +43,7 @@ During code reviews, I'd ask questions about concepts or terminology I wasn't fa
 
 I remember one particular incident vividly. I had asked a question about something in my code, genuinely trying to understand. The frustration in Adam's response was palpable. He raised his voice, repeated the exact same question, and I could see the disappointment written across his face.
 
-I didn't show any response in that moment, just clarification. But later I broke down. Not just in that moment, but something inside me fundamentally broke. Nobody had ever treated me like this in my professional career. This wasn't an isolated incident; it was becoming the norm. Asking for clarification was seen as a failure, not a learning opportunity.
+I held myself together in the moment and asked for clarification as calmly as I could. But later, the weight of it hit me. Nobody had ever treated me like this in my professional career. This wasn't an isolated incident; it was becoming the norm. Asking for clarification was seen as a failure, not a learning opportunity.
 
 ## The Vicious Cycle of Self-Doubt
 
