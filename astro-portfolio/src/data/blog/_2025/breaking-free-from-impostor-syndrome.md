@@ -85,7 +85,7 @@ The difference? I was in an environment where questions were genuinely welcomed.
 
 I applied for more senior positions. I studied system design intensively. I worked on side projects that demonstrated the advanced concepts I'd learnt. And eventually, I landed my first Senior Software Engineer position at a financial startup.
 
-Today, I architect and maintain 13 microservices implementing Domain-Driven Design principles. I work with event-driven architectures using Pub/Sub. I design complex domain models for financial products. I've achieved 99.9% uptime for critical financial operations. I've led platform modernisation initiatives and mentored other engineers.
+Today, I'm the sole senior engineer controlling the entire backend infrastructure for a financial platform. I architect and maintain 13 microservices implementing Domain-Driven Design principles. I work with event-driven architectures using Pub/Sub. I design complex domain models for financial products. I've achieved 99.9% uptime for critical financial operations. I've led platform modernisation initiatives and mentored other engineers. The responsibility is mine, and I handle it with the confidence I once thought I'd never have.
 
 I became the engineer I always believed I could be.
 
