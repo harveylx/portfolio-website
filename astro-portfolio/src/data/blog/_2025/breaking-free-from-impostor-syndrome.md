@@ -1,5 +1,5 @@
 ---
-title: "Breaking Free from Impostor Syndrome: How I Went from Feeling Like a Fraud to Becoming a Senior Engineer"
+title: "How I Became the Impostor: Breaking Free from Toxic Environments and Self-Fulfilling Prophecies"
 description: "A candid story about struggling with impostor syndrome, toxic environments, and ultimately finding my way to becoming a confident senior software engineer."
 pubDatetime: 2025-10-20T10:00:00Z
 author: Harvey Singh
@@ -13,7 +13,7 @@ tags:
   - adhd
 ---
 
-Three years ago, I was sitting at my desk, tears streaming down my face after a particularly harsh interaction with a colleague. I had just asked what I thought was a reasonable question, only to be met with raised voices and visible frustration. In that moment, I genuinely questioned whether I had chosen the wrong career path. Today, I'm a Senior Software Engineer working on complex distributed systems for a financial platform. This is the story of how I got here.
+At one point in my career, I genuinely questioned whether I had chosen the wrong path. After months of harsh interactions with colleagues, being met with raised voices and visible frustration whenever I asked questions, I had started to believe I wasn't cut out for software engineering. Today, I'm a Senior Software Engineer working on complex distributed systems for a financial platform. This is the story of how I got here.
 
 ![Person looking stressed while working at computer](@/assets/images/blog/impostor-syndrome-stressed.jpg)
 
@@ -55,7 +55,7 @@ I felt like I was in an impossible situation. I was working with two people who 
 
 The worst part? I started to internalise it.
 
-I spent nine months after passing my probation period feeling utterly depressed about my career. The impostor syndrome that had crept in during those early months took full hold. I went from being someone who was eager to learn and improve to someone who believed they were fundamentally not good enough for this industry. Each interaction chipped away a little more at my confidence until there was barely anything left.
+I spent months after passing my probation period feeling utterly depressed about my career. The impostor syndrome that had crept in during those early months took full hold. I went from being someone who was eager to learn and improve to someone who believed they were fundamentally not good enough for this industry. Each interaction chipped away a little more at my confidence until there was barely anything left.
 
 And here's where I have to be honest: it wasn't entirely their fault.
 
@@ -79,11 +79,11 @@ After leaving that role, I did something I should have done earlier: I took time
 
 But more importantly, I started rebuilding my confidence.
 
-My next role was a revelation. Within weeks, I realised something crucial: I had actually learnt an enormous amount during those difficult nine months. The technologies and patterns I'd struggled with before suddenly made sense. The concepts I thought I'd failed to grasp were now part of my mental toolkit.
+My next role was a revelation. Within weeks, I realised something crucial: I had actually learnt an enormous amount during that difficult period. The technologies and patterns I'd struggled with before suddenly made sense. The concepts I thought I'd failed to grasp were now part of my mental toolkit.
 
 The difference? I was in an environment where questions were genuinely welcomed. Where not knowing something wasn't treated as a character flaw. Where learning was expected, not merely tolerated.
 
-Over the following months, I applied for more senior positions. I studied system design intensively. I worked on side projects that demonstrated the advanced concepts I'd learnt. And eventually, I landed my first Senior Software Engineer position at a financial startup.
+I applied for more senior positions. I studied system design intensively. I worked on side projects that demonstrated the advanced concepts I'd learnt. And eventually, I landed my first Senior Software Engineer position at a financial startup.
 
 Today, I architect and maintain 13 microservices implementing Domain-Driven Design principles. I work with event-driven architectures using Pub/Sub. I design complex domain models for financial products. I've achieved 99.9% uptime for critical financial operations. I've led platform modernisation initiatives and mentored other engineers.
 
@@ -99,25 +99,55 @@ Looking back, I've learnt several crucial things about impostor syndrome and tox
 
 Impostor syndrome isn't just an internal battle. It's profoundly influenced by your environment. You can be a competent engineer in one setting and feel completely inadequate in another, not because your skills have changed, but because the environment has changed how you perceive your skills.
 
+Think about it: the same person with the same knowledge can thrive in one team and struggle in another. I went from feeling incompetent to landing a senior position in a relatively short time, not because I suddenly became a different engineer, but because I was finally in an environment that allowed me to demonstrate what I already knew.
+
+Your environment shapes your confidence, your willingness to take risks, your ability to learn, and ultimately your performance. A toxic environment doesn't just make you feel bad; it actively impairs your ability to function at your best. Conversely, a supportive environment can unlock potential you didn't even know you had. When evaluating your own skills, always factor in the context. Are you truly struggling, or is your environment making it impossible to succeed?
+
 ### 2. "It's Okay to Ask Questions" Means Nothing Without Follow-Through
 
 Words are cheap. If a team says it's okay to ask questions but responds with frustration and sighs when you do, they're not creating a psychologically safe environment. Pay attention to actions, not words.
+
+This is perhaps one of the most damaging forms of workplace toxicity because it's so insidious. The team can claim they have a healthy learning culture while simultaneously punishing people for learning. It creates cognitive dissonance: you're told one thing but experience another, and you start to question your own perception of reality.
+
+Real psychological safety isn't about what people say in onboarding documents or team charters. It's demonstrated in the daily interactions: How do people respond when you don't understand something? Is there patience in their explanations? Do they make you feel stupid for asking, or do they respect that you're trying to learn? A truly healthy team doesn't just tolerate questions; they welcome them as opportunities to share knowledge and improve documentation. If your gut tells you that asking questions is dangerous, trust that instinct. Your gut is reading the room correctly, even if the words being spoken suggest otherwise.
 
 ### 3. You Can Become the Impostor
 
 This is the most insidious aspect of severe impostor syndrome. When you internalise the belief that you're not good enough, you can actually start performing below your capabilities. It becomes a self-fulfilling prophecy. Breaking this cycle requires either changing your environment or actively working to rebuild your confidence.
 
+The psychological mechanism here is devastating. When you believe you're going to fail anyway, your brain starts to protect you from disappointment by reducing effort. Why try your hardest when it won't be good enough? This creates a vicious cycle: reduced effort leads to poorer results, which confirms your belief that you're not good enough, which further reduces effort.
+
+I lived this cycle. I became unreliable. I stopped caring as much. Not because I was inherently a bad engineer, but because the constant negative feedback had eroded my motivation to the point where self-sabotage felt like self-preservation. The tragic irony is that impostor syndrome is supposed to be about feeling like a fraud despite being competent. But if left unchecked in a toxic environment, it can actually make you less competent, turning the fear into reality. Recognising this pattern is crucial. If you notice your performance declining in lockstep with your confidence, you're likely in this cycle. The solution isn't to try harder in the same environment; it's to break the cycle by changing something fundamental about your situation.
+
 ### 4. Experience and Knowledge Gaps Are Different Things
 
 Someone who built a system will always have more context than someone new to it. This is a knowledge gap, not a competence gap. A good team understands this distinction. A toxic team treats knowledge gaps as if they're competence gaps.
+
+This distinction is absolutely critical. If you join a team and don't understand their custom-built infrastructure and libraries, that's not a sign you're a bad engineer. It's a sign you're new. If you don't immediately grasp the domain-specific terminology they've used for years, that's not incompetence. It's inexperience with that specific domain.
+
+Knowledge gaps close with time and good documentation. Competence gaps require fundamental skill development. The two require completely different approaches. When I was struggling on that team, my colleagues had years of context about systems they had built. Of course I didn't have that context. I couldn't have that context. No amount of innate talent would have given me knowledge of decisions made before I joined, architectural choices from years prior, or domain concepts they'd internalised over time.
+
+A healthy team actively works to close knowledge gaps through documentation, patient explanations, and knowledge sharing. A toxic team uses knowledge gaps as weapons, making you feel stupid for not knowing things you couldn't possibly know. If you're being made to feel incompetent for lacking context you've never had access to, that's a red flag about the team, not about you.
 
 ### 5. Sometimes You Need to Walk Away
 
 Not every job is worth saving. Not every team is worth the mental health toll. Sometimes the bravest thing you can do is recognise when an environment is fundamentally toxic and leave.
 
+We're often told to persevere, to stick it out, to prove ourselves. There's a cultural narrative that leaving a difficult job is giving up or admitting defeat. But staying in a toxic environment isn't brave; it's self-destructive. There's a difference between a challenging role that stretches your abilities and a toxic role that destroys your confidence.
+
+I stayed far longer than I should have because I thought leaving would prove I was the impostor I feared I was. I thought if I could just work hard enough, learn fast enough, be good enough, things would improve. But toxic environments don't improve just because you try harder. In fact, the harder you try in a fundamentally broken environment, the more damage it does.
+
+Walking away isn't failure. It's recognising that your mental health, your confidence, and your career trajectory are more valuable than any single job. It's understanding that you can't grow in soil that's poisoned. Some of the best career decisions I've made involved recognising when a situation was unsalvageable and having the courage to leave. If you're in an environment that's destroying you, leaving isn't giving up. It's choosing yourself. And that is absolutely something that I believe is far more than just "okay". It's necessary.
+
 ### 6. You Learn More Than You Realise
 
 Even in difficult situations, you're learning. I didn't realise how much I'd absorbed about microservices, event-driven architectures, and advanced system design until I was in an environment where I could actually apply that knowledge confidently.
+
+This is perhaps the most hopeful lesson. Even when you feel like you're drowning, even when you think you're failing, even when impostor syndrome has convinced you that you're learning nothing, your brain is still absorbing information. You're building pattern recognition. You're developing problem-solving strategies. You're accumulating technical knowledge, even if you can't access it effectively in a high-stress environment.
+
+When I left that job, I genuinely believed I had wasted all that time learning nothing. I was wrong. Within weeks of starting my next role, I found myself confidently discussing concepts that had seemed impossible before. I was implementing patterns I thought I'd failed to understand. The knowledge was there; it had just been locked away behind layers of anxiety and self-doubt.
+
+Toxic environments don't just make you feel incompetent; they actively prevent you from recognising and demonstrating your competence. The knowledge is often there, buried under stress and fear. Once you remove the toxic environment, you'll likely be surprised by how much you actually learnt. Trust that even in the worst situations, you're growing. The growth might not be visible until you're somewhere that allows you to demonstrate it, but it's happening. Your struggle wasn't wasted, even if it felt like it at the time.
 
 ## To Anyone Currently Struggling
 
@@ -151,7 +181,7 @@ You don't owe any job your mental health. If an environment is making you questi
 
 **5. Therapy and Professional Support**
 
-If possible, seek professional help. I didn't realise how much the experience had affected me until I started talking about it with a therapist. My later ADHD diagnosis also helped me understand why I struggled so much in certain environments.
+If possible, seek professional help. I didn't realise how much the experience had affected me until I started talking about it with a therapist. My ADHD diagnosis also helped me understand why I struggled so much in certain environments.
 
 ## Looking Back
 
