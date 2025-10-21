@@ -25,7 +25,6 @@ When I'm not building software:
 ## Get in Touch
 
 I'm always interested in discussing software architecture, financial systems, or fitness! Feel free to reach out via:
-- **Email**: harvirjaswal@gmail.com
 - **GitHub**: [github.com/harveylx](https://github.com/harveylx)
 - **LinkedIn**: [linkedin.com/in/harveylx](https://linkedin.com/in/harveylx)
 - **Location**: London, United Kingdom
