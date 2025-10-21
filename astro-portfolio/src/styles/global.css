@@ -5,19 +5,90 @@
 
 :root,
 html[data-theme="light"] {
-  --background: #f6eee1;
-  --foreground: #012c56;
-  --accent: #e14a39;
-  --muted: #efd8b0;
-  --border: #dc9891;
+  /* ===== LIGHT THEME PALETTES ===== */
+  /* Uncomment the palette you want to use and comment out the others */
+
+  /* 1. Warm Minimal - Sophisticated, warm, inviting */
+  /* --background: #FDFAF6;
+  --foreground: #2C3E50;
+  --accent: #FF6B6B;
+  --muted: #F0EDE6;
+  --border: #E8DED1; */
+
+  /* 2. Soft Sage - Fresh, clean, growth-oriented */
+  --background: #F8FAF9;
+  --foreground: #2F3542;
+  --accent: #00B894;
+  --muted: #EDF2F0;
+  --border: #D5E1DD;
+
+  /* 3. Cream & Violet - Bold, modern, high-contrast */
+  /* --background: #FBFBFB;
+  --foreground: #1A1A1A;
+  --accent: #6C5CE7;
+  --muted: #F1F2F6;
+  --border: #E6E6EB; */
+
+  /* 4. Peachy Keen - Friendly, approachable, warm */
+  /* --background: #FFF8F3;
+  --foreground: #34495E;
+  --accent: #FF8C69;
+  --muted: #FFEEE6;
+  --border: #FFD9C8; */
 }
 
 html[data-theme="dark"] {
-  --background: #000123;
-  --accent: #617bff;
-  --foreground: #eaedf3;
-  --muted: #0c0e4f;
-  --border: #303f8a;
+  /* ===== DARK THEME PALETTES ===== */
+  /* Uncomment the palette you want to use and comment out the others */
+
+  /* 1. Night Code - Rich dark blue-gray, electric blue accent */
+  /* --background: #0f172a;
+  --foreground: #f1f5f9;
+  --accent: #3b82f6;
+  --muted: #1e293b;
+  --border: #334155; */
+
+  /* 2. True OLED - Pure black, vibrant cyan accent, battery-efficient */
+  /* --background: #000000;
+  --foreground: #e5e7eb;
+  --accent: #22d3ee;
+  --muted: #1c1c1c;
+  --border: #2d2d2d; */
+
+  /* 3. Material Dark - Google Material inspired, warm purple accent */
+  /* --background: #121212;
+  --foreground: #e0e0e0;
+  --accent: #bb86fc;
+  --muted: #1e1e1e;
+  --border: #2c2c2c; */
+
+  /* 4. Midnight Slate - Deep charcoal, teal accent */
+  /* --background: #0a0f1e;
+  --foreground: #cbd5e1;
+  --accent: #14b8a6;
+  --muted: #1a2332;
+  --border: #293548; */
+
+  /* 5. Warm Night - Dark brown tones, coral accent, cozy feel */
+  --background: #1a1614;
+  --foreground: #e7e5e4;
+  --accent: #fb923c;
+  --muted: #292524;
+  --border: #3f3f46;
+
+  /* 6. Deep Purple - Dark navy with purple tints, violet accent */
+  /* --background: #0d0d1e;
+  --foreground: #f3f4f6;
+  --accent: #a78bfa;
+  --muted: #1c1c2e;
+  --border: #2d2d44; */
+
+  /* 7. GitHub Dark - Inspired by GitHub's dark theme */
+  /* --background: #0d1117;
+  --foreground: #c9d1d9;
+  --accent: #58a6ff;
+  --muted: #161b22;
+  --border: #30363d; */
 }
 
 @theme inline {
@@ -26,6 +97,10 @@ html[data-theme="dark"] {
   --color-accent: var(--accent);
   --color-muted: var(--muted);
   --color-border: var(--border);
+
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 @layer base {
@@ -38,7 +113,7 @@ html[data-theme="dark"] {
     @apply overflow-y-scroll scroll-smooth;
   }
   body {
-    @apply flex min-h-svh flex-col bg-background font-mono text-foreground selection:bg-accent/75 selection:text-background;
+    @apply flex min-h-svh flex-col bg-background font-sans text-foreground selection:bg-accent/75 selection:text-background;
   }
   a,
   button {
