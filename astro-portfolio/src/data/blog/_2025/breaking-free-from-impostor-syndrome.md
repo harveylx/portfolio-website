@@ -75,9 +75,9 @@ Eventually, I was let go. In many ways, I saw it coming. But I left that role be
 
 ![Sunrise representing a new beginning](@/assets/images/blog/new-beginning-sunrise.jpg)
 
-After leaving that role, I did something I should have done earlier: I took time to properly learn. Not just surface-level tutorials, but deep dives into the concepts I'd been exposed to. Event-driven architectures. Domain-Driven Design. System design patterns. Microservices architecture.
+After leaving that role, I did two things: I took time to properly study the concepts I'd been exposed to (event-driven architectures, Domain-Driven Design, system design patterns, microservices architecture), and more importantly, I started rebuilding my confidence.
 
-But more importantly, I started rebuilding my confidence.
+What I didn't realise at the time was that much of the technical knowledge was already there, locked away by anxiety. The studying helped, but what really mattered was regaining the confidence to access and apply what I'd already learnt.
 
 My next role was a revelation. Within weeks, I realised something crucial: I had actually learnt an enormous amount during that difficult period. The technologies and patterns I'd struggled with before suddenly made sense. The concepts I thought I'd failed to grasp were now part of my mental toolkit.
 
@@ -171,7 +171,7 @@ Here's what I wish someone had told me earlier: toxic environments are structura
 
 The signs that it's time to leave aren't always obvious. It's not just about dramatic incidents or clear-cut abuse. Sometimes it's subtler. Are you dreading work every day? Have you stopped learning because you're too anxious to try new things? Do you find yourself constantly second-guessing decisions that you'd make confidently elsewhere? Are you experiencing physical symptoms of stress: trouble sleeping, anxiety, difficulty concentrating outside of work? These are your body and mind telling you something important.
 
-I'll reiterate from earlier: I didn't leave that job voluntarily. I was let go. But in hindsight, that was a blessing. I was too deep in the cycle of self-doubt to recognise that I needed to leave. I thought if I just tried harder, if I just proved myself enough, things would change. They wouldn't have. The environment was fundamentally broken, and no amount of individual effort would have fixed that.
+In hindsight, being let go was a blessing. I was too deep in the cycle of self-doubt to recognise that I needed to leave. I thought if I just tried harder, if I just proved myself enough, things would change. They wouldn't have. The environment was fundamentally broken, and no amount of individual effort would have fixed that.
 
 Walking away isn't failure. It's recognising that your mental health, your confidence, and your career trajectory are more valuable than any single job. It's understanding that you can't grow in soil that's poisoned. Some of the best career decisions I've made involved recognising when a situation was unsalvageable and having the courage to leave.
 
@@ -235,9 +235,7 @@ If possible, seek professional help. I didn't realise how much the experience ha
 
 ## Looking Back
 
-I don't regret taking that job, as strange as that might sound. Yes, it was one of the most difficult periods of my career. Yes, it nearly made me quit programming entirely. But it also taught me resilience. It taught me what kind of engineer I want to be and what kind of environments I want to work in.
-
-More importantly, it taught me that impostor syndrome isn't always an internal battle. Sometimes it's a reflection of an external reality that needs to change.
+As painful as that experience was, it taught me invaluable lessons. It taught me resilience. It taught me what kind of engineer I want to be and what kind of environments I want to work in. Most importantly, it taught me that impostor syndrome isn't always an internal battle. Sometimes it's a reflection of an external reality that needs to change.
 
 Today, when I work with junior engineers, I remember how I felt in those code reviews. I remember the shame of asking questions. I remember the fear of not knowing something. And I make damn sure that nobody on my team ever feels the way I felt.
 
