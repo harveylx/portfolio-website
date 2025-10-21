@@ -1,3 +1,0 @@
-# Redirect non-www to www to avoid duplicate content
-https://harveysingh.xyz/* https://www.harveysingh.xyz/:splat 301!
-http://harveysingh.xyz/* https://www.harveysingh.xyz/:splat 301!
