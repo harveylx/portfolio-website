@@ -20,7 +20,7 @@ if (mainHeadings.length < 2) {
 <button
   id="toc-toggle"
   class:list={[
-    "p-2 rounded-md transition-colors",
+    "rounded-md p-2 transition-colors",
     "hover:bg-muted hover:text-accent",
     "focus-visible:outline-2 focus-visible:outline-accent",
   ]}
@@ -35,27 +35,29 @@ if (mainHeadings.length < 2) {
 <nav
   id="toc-menu"
   class:list={[
-    "absolute right-0 top-full z-40 w-64 rounded-md bg-background border border-muted mt-2",
-    "opacity-0 pointer-events-none transition-opacity duration-200",
+    "absolute top-full right-0 z-40 mt-2 w-64 rounded-md border border-muted bg-background",
+    "pointer-events-none opacity-0 transition-opacity duration-200",
     "max-h-96 overflow-y-auto shadow-lg",
   ]}
   aria-label="Table of contents"
 >
   <ul class="space-y-0 text-sm">
-    {mainHeadings.map((heading, index) => (
-      <li>
-        <a
-          href={`#${heading.slug}`}
-          class:list={[
-            "block py-2 px-4 transition-colors text-foreground hover:bg-muted hover:text-accent no-underline",
-            { "border-t border-muted": index > 0 },
-          ]}
-          data-toc-link={heading.slug}
-        >
-          {heading.text}
-        </a>
-      </li>
-    ))}
+    {
+      mainHeadings.map((heading, index) => (
+        <li>
+          <a
+            href={`#${heading.slug}`}
+            class:list={[
+              "block px-4 py-2 text-foreground no-underline transition-colors hover:bg-muted hover:text-accent",
+              { "border-t border-muted": index > 0 },
+            ]}
+            data-toc-link={heading.slug}
+          >
+            {heading.text}
+          </a>
+        </li>
+      ))
+    }
   </ul>
 </nav>
 
@@ -69,7 +71,7 @@ if (mainHeadings.length < 2) {
     let isOpen = false;
 
     // Toggle menu
-    toggle.addEventListener("click", (e) => {
+    toggle.addEventListener("click", e => {
       e.stopPropagation();
       isOpen = !isOpen;
       if (isOpen) {
@@ -84,7 +86,7 @@ if (mainHeadings.length < 2) {
     });
 
     // Close when clicking a link
-    menu.querySelectorAll("a").forEach((link) => {
+    menu.querySelectorAll("a").forEach(link => {
       link.addEventListener("click", () => {
         isOpen = false;
         menu.classList.add("opacity-0", "pointer-events-none");
@@ -94,7 +96,7 @@ if (mainHeadings.length < 2) {
     });
 
     // Close when clicking outside
-    document.addEventListener("click", (e) => {
+    document.addEventListener("click", e => {
       if (isOpen && e.target !== toggle && !menu.contains(e.target)) {
         isOpen = false;
         menu.classList.add("opacity-0", "pointer-events-none");
