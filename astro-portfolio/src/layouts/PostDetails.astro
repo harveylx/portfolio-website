@@ -84,7 +84,6 @@ const nextPost =
 
 <Layout {...layoutProps}>
   <Header />
-  <PostHeaderBar {headings} />
   <main
     id="main-content"
     class:list={[
@@ -92,6 +91,7 @@ const nextPost =
     ]}
     data-pagefind-body
   >
+    <PostHeaderBar {headings} />
       <h1
         transition:name={slugifyStr(title)}
         class="inline-block text-2xl font-bold text-accent sm:text-3xl"
