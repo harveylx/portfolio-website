@@ -25,6 +25,9 @@ jobs:
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
+        
+      - name: Enable Corepack for Yarn 4
+        run: corepack enable
 
       - name: "📦 Setup Node.js"
         uses: actions/setup-node@v4
@@ -35,6 +38,9 @@ jobs:
 
       - name: "📦 Install dependencies"
         run: yarn install --frozen-lockfile
+        
+      - name: "🌐 Install Chromium browser for Playwright"
+        run: yarn playwright install chromium --with-deps
 
       - name: "🚀 Build the project"
         run: yarn build
