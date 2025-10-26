@@ -44,6 +44,9 @@ jobs:
 
       - name: "📦 Install dependencies"
         run: yarn install --frozen-lockfile
+        
+      - name: "🌐 Install Playwright browsers"
+        run: yarn playwright install
 
       - name: "🔎 Lint code"
         run: yarn lint
