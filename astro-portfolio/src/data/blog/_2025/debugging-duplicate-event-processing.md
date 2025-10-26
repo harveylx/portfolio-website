@@ -107,29 +107,6 @@ services.AddDbContext<TContext>(
 
 **Result:** Events still duplicating. 😞
 
-```mermaid
-graph LR
-    subgraph "Day 1: Hypothesis Testing"
-        Before[Transient DbContext]
-        Change[Changed to Scoped]
-        After[Events still duplicate]
-        Test1[Test: Multiple contexts<br/>in same scope]
-        Test2[Test: Contexts across<br/>different scopes]
-        Result1[Hard to verify directly]
-        Result2[✅ Different interceptors<br/>per scope]
-        Conclusion[❌ Hypothesis disproven<br/>but kept Scoped anyway]
-
-        Before --> Change
-        Change --> After
-        After --> Test1
-        After --> Test2
-        Test1 --> Result1
-        Test2 --> Result2
-        Result1 --> Conclusion
-        Result2 --> Conclusion
-    end
-```
-
 We tested our hypothesis by checking if interceptors were truly isolated per scope:
 
 ```csharp
@@ -191,45 +168,34 @@ public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(...)
 
 ```mermaid
 sequenceDiagram
-    participant App as Application Code
+    participant App as Application
     participant EF as EF Core
     participant Int as Interceptor #4<br/>(Hash: 00736C33)
     participant List as _added List
 
     App->>EF: SaveChangesAsync()
 
-    Note over EF,Int: First SavingChangesAsync Call
-
-    EF->>Int: SavingChangesAsync() - Call 1, Depth: 1
-    Note over Int: Extract 1 domain event
-    Note over Int: Add Event entity to ChangeTracker
-    Int->>Int: GetAddedEventIds() finds Event
-    Int->>List: Add event ID: 9affe28b
+    EF->>Int: SavingChangesAsync() — Call 1, Depth 1
+    Note over Int: Extracts 1 domain event<br/>Adds Event to ChangeTracker
+    Int->>Int: GetAddedEventIds() → finds Event
+    Int->>List: Add ID: 9affe28b
     Note over List: Count = 1 ✓
     Int-->>EF: Return
 
-    Note over EF,Int: Second SavingChangesAsync Call<br/>(Same interceptor, same context, same depth!)
+    Note over EF,Int: Second SavingChangesAsync()<br/>(Same interceptor, same context, same depth!)
 
-    EF->>Int: SavingChangesAsync() - Call 2, Depth: 1
-    Note over Int: Extract 0 domain events (already cleared)
-    Int->>Int: GetAddedEventIds() STILL finds Event in ChangeTracker
-    Int->>List: Add SAME event ID: 9affe28b
-    Note over List: Count = 2 ⚠️ DUPLICATE
+    EF->>Int: SavingChangesAsync() — Call 2, Depth 1
+    Note over Int: Extracts 0 new events<br/>Event still in ChangeTracker
+    Int->>List: Add same ID: 9affe28b
+    Note over List: Count = 2 ⚠️ Duplicate
     Int-->>EF: Return
 
-    EF->>EF: Persist to database
-
-    Note over EF,Int: SavedChangesAsync Phase
+    Note over EF,Int: SavedChangesAsync phase
 
     EF->>Int: SavedChangesAsync()
-    Int->>Int: Process event 1/2: 9affe28b ✓
-    Int->>Int: Process event 2/2: 9affe28b ✓
-    Note over Int: ❌ DUPLICATE PROCESSING!
-    Int-->>EF: Return
+    Int->>Int: Processes both events ❌ Duplicate handling
 
-    rect
-        Note over App,List: Question: Why is the same interceptor<br/>being called twice at the same stack depth?
-    end
+    Note over App,List: Why is the same interceptor<br/>invoked twice at depth 1?
 ```
 
 Running our integration tests produced this output:
@@ -326,22 +292,6 @@ This seemed ridiculous. We'd proven that scopes don't share interceptors. We'd p
 
 ### The Smoking Gun
 
-```mermaid
-graph TB
-    subgraph "The Discovery"
-        Question[Why duplicate processing?]
-        Idea[Wild Theory: Maybe TWO<br/>interceptor instances?]
-        Test[Enumerate ALL interceptors<br/>from DbContext]
-        Result[Found 2x SaveChangesInterceptor<br/>2x OnConnectingInterceptor!]
-        Truth[Not same interceptor called twice...<br/>TWO DIFFERENT INTERCEPTORS<br/>called once each!]
-
-        Question --> Idea
-        Idea --> Test
-        Test --> Result
-        Result --> Truth
-    end
-```
-
 We added logging to capture ALL interceptor instances:
 
 ```csharp
@@ -367,30 +317,6 @@ Interceptor: OnConnectingInterceptor (Hash: 03456DEF)  ← DUPLICATE!
 **There it was.** Two instances of `SaveChangesInterceptor<TContext>`. Not shared across scopes. Just... registered twice.
 
 ### Finding the Source
-
-```mermaid
-graph TB
-    subgraph "How Did We Get Two Interceptors?"
-        Start[Where did double<br/>registration happen?]
-        Check1[Check Onward's AddDbContext]
-        Find1[Registers interceptors<br/>calls EF Core's AddDbContext]
-        Check2[Check consuming app]
-        Find2[AddShoppingCartContext helper<br/>wraps Onward's AddDbContext]
-        Check3[Check test setup]
-        Find3[WebApplicationFactory<br/>ConfigureTestServices]
-        Problem[RemoveAll removes DbContext<br/>but NOT IDbContextOptionsConfiguration!]
-        Root[Program.cs registered once<br/>ConfigureTestServices registered AGAIN<br/>TWO configurations = TWO interceptors]
-
-        Start --> Check1
-        Check1 --> Find1
-        Find1 --> Check2
-        Check2 --> Find2
-        Find2 --> Check3
-        Check3 --> Find3
-        Find3 --> Problem
-        Problem --> Root
-    end
-```
 
 Here's where it got tricky. Onward is a NuGet package with its own `AddDbContext` extension method:
 
@@ -455,50 +381,50 @@ public class IntegrationTestWebApplicationFactory : WebApplicationFactory<Progra
 
 Now DI had **TWO `IDbContextOptionsConfiguration<ShoppingCartContext>` registrations**!
 
+**Diagram 1: Production Registration**
+
 ```mermaid
 sequenceDiagram
-    participant Prod as Program.cs<br/>(Production Startup)
-    participant Test as WebApplicationFactory<br/>ConfigureTestServices
+    participant Prod as Program.cs
     participant SC as ServiceCollection
-    participant EF as EF Core AddDbContext
-    participant Options as DbContextOptions Factory
+    participant EF as EF Core
 
-    Note over Prod,Options: First Registration (Production)
+    Note over Prod,EF: 🟢 Initial startup - Production registration
 
     Prod->>SC: AddShoppingCartContext()
-    SC->>EF: AddDbContext<ShoppingCartContext>()
-    EF->>SC: services.Add(<br/>IDbContextOptionsConfiguration #1)
-    Note over SC: Registers configuration #1<br/>with interceptor setup
+    SC->>EF: AddDbContext()
+    EF->>SC: Add IDbContextOptionsConfiguration #1<br/>(registers interceptor)
+    Note over SC: Service registered: IDbContextOptionsConfiguration #1
+```
 
-    Note over Prod,Options: Test Tries to Replace
+**Diagram 2: Test Override Problem**
 
-    Test->>SC: RemoveAll(typeof(ShoppingCartContext))
-    Note over SC: ✅ Removes DbContext service
-    Test->>SC: RemoveAll(typeof(DbContextOptions))
-    Note over SC: ✅ Removes options service
+```mermaid
+sequenceDiagram
+    participant Test as ConfigureTestServices
+    participant SC as ServiceCollection
+    participant Options as DbContextOptionsFactory
 
-    Note over SC: ⚠️ IDbContextOptionsConfiguration #1<br/>STILL REGISTERED!
+    Note over Test,Options: 🧪 Test infrastructure setup
 
-    Test->>SC: AddShoppingCartContext() again
-    SC->>EF: AddDbContext<ShoppingCartContext>()
-    EF->>SC: services.Add(<br/>IDbContextOptionsConfiguration #2)
-    Note over SC: Now has TWO IDbContextOptionsConfiguration!<br/>#1 (from prod) + #2 (from test)
+    Test->>SC: RemoveAll(ShoppingCartContext)
+    Test->>SC: RemoveAll(DbContextOptions)
+    Note over SC: ⚠️ IDbContextOptionsConfiguration #1<br/>is NOT removed!
 
-    Note over Prod,Options: Resolution Time
+    Test->>SC: AddShoppingCartContext()
+    SC->>SC: AddDbContext() again
+    Note over SC: Adds IDbContextOptionsConfiguration #2
 
-    Options->>SC: GetServices<br/>(IDbContextOptionsConfiguration)
-    SC-->>Options: Returns BOTH #1 and #2
+    Note over SC: DI now has BOTH #1 and #2!
 
-    loop For each configuration
-        Options->>Options: config.Configure(sp, builder)
-        Note over Options: Calls builder.AddInterceptors()
+    Options->>SC: GetServices(IDbContextOptionsConfiguration)
+    SC-->>Options: Returns [#1, #2]
+
+    loop Each configuration
+        Options->>Options: configuration.Configure()<br/>→ builder.AddInterceptors()
     end
 
-    Note over Options: builder now has:<br/>2x SaveChangesInterceptor
-
-    rect
-        Note over SC,Options: Problem: services.Add() doesn't check<br/>for existing registrations.<br/>RemoveAll doesn't remove configurations.<br/>Result: Duplicate interceptors!
-    end
+    Note over Options: ❌ Final result: 2x SaveChangesInterceptor
 ```
 
 ### Understanding EF Core's Options Creation
@@ -545,52 +471,57 @@ Each call to `builder.AddInterceptors()` **concatenates** to the existing interc
 
 ### Why the Two Interceptors Caused Duplicates
 
+**Diagram 1: SavingChangesAsync Phase - Both Interceptors Extract the Same Event**
+
 ```mermaid
 sequenceDiagram
-    participant App as Application Code
+    participant App as Application
     participant EF as EF Core
-    participant Int1 as Interceptor 1<br />(Hash: 016E492A)
-    participant Int2 as Interceptor 2<br />(Hash: 02F3C7DE)
+    participant Int1 as Interceptor 1
+    participant Int2 as Interceptor 2
     participant CT as ChangeTracker
-    participant List1 as _added List #1
-    participant List2 as _added List #2
 
-    Note over App,List2: TWO interceptor instances registered!
+    Note over App,CT: ⚠️ Two interceptor instances registered
 
     App->>EF: SaveChangesAsync()
+    Note over EF: EF Core invokes both interceptors
 
-    Note over EF: EF Core calls BOTH interceptors
-
-    par Interceptor #1 Executes
+    par Int1 executes
         EF->>Int1: SavingChangesAsync()
-        Int1->>Int1: Extract 1 domain event
-        Int1->>CT: Add Event entity
-        Int1->>CT: GetAddedEventIds()
-        CT-->>Int1: [9affe28b]
-        Int1->>List1: Add 9affe28b
-        Note over List1: Count = 1
-    and Interceptor #2 Executes
+        Int1->>CT: Extract + add domain event<br/>ID: 9affe28b
+        Int1->>Int1: Track ID in _added ✓
+    and Int2 executes
         EF->>Int2: SavingChangesAsync()
-        Int2->>Int2: Extract 0 events (already cleared by Int1)
-        Int2->>CT: GetAddedEventIds()
-        Note over CT: Event still in ChangeTracker<br/>from Int1's add!
-        CT-->>Int2: [9affe28b] SAME EVENT
-        Int2->>List2: Add 9affe28b
-        Note over List2: Count = 1
+        Int2->>CT: Finds same event ID<br/>(already added by Int1)
+        Int2->>Int2: Track duplicate ID ⚠️
     end
+
+    Note over EF,CT: Result — both interceptors track<br/>the same event → duplicate processing
+```
+
+**Diagram 2: SavedChangesAsync Phase - Both Process the Same Event**
+
+```mermaid
+sequenceDiagram
+    participant EF as EF Core
+    participant Int1 as Interceptor 1
+    participant Int2 as Interceptor 2
+    participant EventProcessor as Event Processor
+
+    Note over Int1,Int2: Both have same event ID<br/>in their _added lists
 
     EF->>EF: Persist to database
 
-    par Both Process Events
+    par Int1 Processes Events
         EF->>Int1: SavedChangesAsync()
-        Int1->>Int1: Process 9affe28b ✓
-    and
+        Int1->>EventProcessor: Process 9affe28b ✓
+    and Int2 Processes Events
         EF->>Int2: SavedChangesAsync()
-        Int2->>Int2: Process 9affe28b ✓
+        Int2->>EventProcessor: Process 9affe28b ✓
     end
 
-    rect
-        Note over Int1,Int2: Result: SAME event processed<br/>by TWO different interceptors!
+    rect rgb(200, 100, 100)
+        Note over Int1,Int2: ❌ DUPLICATE PROCESSING:<br/>Same event processed TWICE!
     end
 ```
 
@@ -607,38 +538,27 @@ sequenceDiagram
 
 ```mermaid
 graph TB
-    subgraph "Two-Part Solution"
-        Problem[Double interceptor<br/>registration problem]
+    Problem[⚠️ Duplicate interceptor registrations]
 
-        subgraph "Approach 1: Prevention"
-            P1[Check for existing<br/>interceptors in builder]
-            P2[Only add if not<br/>already present]
-            P3[Make AddDbContext<br/>idempotent]
-            PR[✅ Prevents root cause]
-
-            P1 --> P2
-            P2 --> P3
-            P3 --> PR
-        end
-
-        subgraph "Approach 2: Resilience"
-            R1[Change _added<br/>from List to HashSet]
-            R2[Filter out IDs<br/>already in _added]
-            R3[Deduplication in<br/>GetAddedEventIds]
-            RR[✅ Handles edge cases]
-
-            R1 --> R2
-            R2 --> R3
-            R3 --> RR
-        end
-
-        Problem --> P1
-        Problem --> R1
-
-        Final[Robust system:<br/>Prevention + Defense]
-        PR --> Final
-        RR --> Final
+    subgraph "Prevention"
+        P1[Check builder for existing interceptors]
+        P2[Add only if missing]
+        PR[✅ Prevents root cause of duplicate interceptors]
+        P1 --> P2--> PR
     end
+
+    subgraph "Resilience"
+        R1[Use HashSet instead of List for _added]
+        R2[Deduplicate in GetAddedEventIds]
+        RR[✅ Avoids extraction of duplicate events]
+        R1 --> R2 --> RR
+    end
+
+    Problem --> Prevention
+    Problem --> Resilience
+    PR --> Final
+    RR --> Final
+    Final[💪 Robust system = Prevention + Resilience]
 ```
 
 ### Approach 1: Prevent Double Registration
