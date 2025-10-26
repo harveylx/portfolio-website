@@ -1,6 +1,7 @@
 import { defineConfig, envField } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
+import rehypeMermaid from 'rehype-mermaid';
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
 import {
@@ -21,6 +22,11 @@ export default defineConfig({
   ],
   markdown: {
     remarkPlugins: [remarkToc, [remarkCollapse, { test: "Table of contents" }]],
+    syntaxHighlight: {
+      type: "shiki",
+      excludeLangs: ["mermaid"]
+    },
+    rehypePlugins: [[rehypeMermaid, { strategy: 'img-svg', dark: 'dark' }]],
     shikiConfig: {
       // For more themes, visit https://shiki.style/themes
       themes: { light: "min-light", dark: "night-owl" },
