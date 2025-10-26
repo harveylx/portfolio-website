@@ -45,17 +45,8 @@ jobs:
       - name: "📦 Install dependencies"
         run: yarn install --frozen-lockfile
 
-      - name: "🖥️ Install Playwright dependencies on Ubuntu"
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libgtk-4-1 libgraphene-1.0-0 libwoff2-1 libvpx9 libevent-2.1-7 \
-            libopus0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good \
-            libflite1 libavif16 libharfbuzz-icu0 libsecret-1-0 libhyphen0 \
-            libmanette-0.2-0 libgles2-mesa libx264-163
-
       - name: "🌐 Install Chromium browser for Playwright"
-        run: yarn playwright install chromium
+        run: yarn playwright install chromium --with-deps
 
       - name: "🔎 Lint code"
         run: yarn lint
