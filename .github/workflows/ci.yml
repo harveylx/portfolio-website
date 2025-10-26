@@ -41,6 +41,9 @@ jobs:
           
       - name: Enable Corepack for Yarn 4
         run: corepack enable
+        
+      - name: Prepare Yarn 4
+        run: corepack prepare yarn@4.10.3 --activate
 
       - name: "📦 Install dependencies"
         run: yarn install --frozen-lockfile
