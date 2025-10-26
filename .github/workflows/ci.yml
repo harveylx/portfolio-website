@@ -19,7 +19,7 @@ jobs:
   build:
     name: Code standards & build
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: astro-portfolio
