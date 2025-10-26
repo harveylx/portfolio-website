@@ -1,9 +1,9 @@
 import { defineConfig, envField } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
-import rehypeMermaid from 'rehype-mermaid';
-import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-import rehypeSlug from 'rehype-slug';
+import rehypeMermaid from "rehype-mermaid";
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import rehypeSlug from "rehype-slug";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
 import {
@@ -26,12 +26,15 @@ export default defineConfig({
     remarkPlugins: [remarkToc, [remarkCollapse, { test: "Table of contents" }]],
     syntaxHighlight: {
       type: "shiki",
-      excludeLangs: ["mermaid"]
+      excludeLangs: ["mermaid"],
     },
     rehypePlugins: [
       rehypeSlug,
-      [rehypeAutolinkHeadings, { behavior: 'prepend', properties: { className: ['heading-anchor'] } }],
-      [rehypeMermaid, { strategy: 'img-svg', dark: true }]
+      [
+        rehypeAutolinkHeadings,
+        { behavior: "prepend", properties: { className: ["heading-anchor"] } },
+      ],
+      [rehypeMermaid, { strategy: "img-svg", dark: true }],
     ],
     shikiConfig: {
       // For more themes, visit https://shiki.style/themes

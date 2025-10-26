@@ -24,28 +24,28 @@ function setPreference() {
 }
 
 function updateMermaidImages() {
-  const isDark = themeValue === 'dark';
+  const isDark = themeValue === "dark";
 
   // Find all picture elements with mermaid diagrams
-  document.querySelectorAll('picture').forEach(picture => {
-    const source = picture.querySelector('source');
-    const img = picture.querySelector('img');
+  document.querySelectorAll("picture").forEach(picture => {
+    const source = picture.querySelector("source");
+    const img = picture.querySelector("img");
 
     if (source && img) {
-      const srcset = source.getAttribute('srcset');
-      const imgSrc = img.getAttribute('src');
+      const srcset = source.getAttribute("srcset");
+      const imgSrc = img.getAttribute("src");
 
       // Check if this is a mermaid diagram by looking for 'mermaid' in the src
-      if (srcset?.includes('mermaid') && imgSrc?.includes('mermaid')) {
+      if (srcset?.includes("mermaid") && imgSrc?.includes("mermaid")) {
         // Swap based on current theme
         if (isDark) {
-          source.setAttribute('media', '(prefers-color-scheme: dark)');
+          source.setAttribute("media", "(prefers-color-scheme: dark)");
         } else {
-          source.setAttribute('media', '(prefers-color-scheme: light)');
+          source.setAttribute("media", "(prefers-color-scheme: light)");
         }
         // Force repaint
-        picture.style.display = 'none';
-        setTimeout(() => picture.style.display = '', 0);
+        picture.style.display = "none";
+        setTimeout(() => (picture.style.display = ""), 0);
       }
     }
   });

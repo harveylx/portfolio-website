@@ -212,4 +212,4 @@ If you're struggling with impostor syndrome right now, please know: you might no
 
 ---
 
-*If this story resonated with you, I'd love to hear about it. Feel free to connect with me on [LinkedIn](https://linkedin.com/in/harveylx). You're not alone in this.*
+_If this story resonated with you, I'd love to hear about it. Feel free to connect with me on [LinkedIn](https://linkedin.com/in/harveylx). You're not alone in this._

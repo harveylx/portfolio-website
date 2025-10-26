@@ -3,7 +3,6 @@ export const SITE = {
   author: "Harvey Singh",
   profile: "https://harveysingh.xyz/",
 
-
   desc: "Senior Software Engineer | Tech Blog & Portfolio", // Your professional tagline
   title: "Harvey Singh",
   ogImage: "og-image.png", // Replace with your own OG image

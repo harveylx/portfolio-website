@@ -9,15 +9,14 @@ interface Props {
 const { headings = [] } = Astro.props;
 ---
 
-<div id="post-header-bar" class="flex w-full items-center justify-between sticky top-0 z-30 bg-background/60 border-b border-dashed pt-2 pb-2 mb-2">
+<div
+  id="post-header-bar"
+  class="sticky top-0 z-30 mb-2 flex w-full items-center justify-between border-b border-dashed bg-background/60 pt-2 pb-2"
+>
   <div>
     <BackButton />
   </div>
-  {
-    headings.length >= 2 && (
-      <TableOfContents {headings} />
-    )
-  }
+  {headings.length >= 2 && <TableOfContents {headings} />}
 </div>
 
 <script is:inline>
@@ -28,19 +27,19 @@ const { headings = [] } = Astro.props;
     if (!headerBar) return;
 
     if (window.scrollY > 0) {
-      headerBar.classList.remove('border-b', 'border-dashed');
+      headerBar.classList.remove("border-b", "border-dashed");
     } else {
-      headerBar.classList.add('border-b', 'border-dashed');
+      headerBar.classList.add("border-b", "border-dashed");
     }
   }
 
   function initHeaderBorder() {
-    headerBar = document.getElementById('post-header-bar');
+    headerBar = document.getElementById("post-header-bar");
     if (!headerBar) return;
 
     // Only attach listener once
     if (!listenerAttached) {
-      document.addEventListener('scroll', updateBorder, { passive: true });
+      document.addEventListener("scroll", updateBorder, { passive: true });
       listenerAttached = true;
     }
 
@@ -52,5 +51,5 @@ const { headings = [] } = Astro.props;
   initHeaderBorder();
 
   // Re-init on view transitions (updates headerBar reference)
-  document.addEventListener('astro:after-swap', initHeaderBorder);
+  document.addEventListener("astro:after-swap", initHeaderBorder);
 </script>
