@@ -91,17 +91,17 @@ I became the engineer I always believed I could be.
 
 Looking back, I've learnt several crucial things about impostor syndrome and toxic work environments. Here's the quick version:
 
-1. **The Environment Matters More Than You Think** — Your environment shapes your confidence far more than you realize. The same person can thrive in one team and struggle in another.
+1. **The Environment Matters More Than You Think:** Your environment shapes your confidence far more than you realize. The same person can thrive in one team and struggle in another.
 
-2. **"It's Okay to Ask Questions" Means Nothing Without Follow-Through** — Words are cheap. Real psychological safety is demonstrated in daily interactions, not onboarding documents.
+2. **"It's Okay to Ask Questions" Means Nothing Without Follow-Through:** Words are cheap. Real psychological safety is demonstrated in daily interactions, not onboarding documents.
 
-3. **You Can Become the Impostor** — When you internalize the belief that you're not good enough, you can actually start performing below your capabilities, creating a self-fulfilling prophecy.
+3. **You Can Become the Impostor:** When you internalize the belief that you're not good enough, you can actually start performing below your capabilities, creating a self-fulfilling prophecy.
 
-4. **Experience and Knowledge Gaps Are Different Things** — Not knowing institutional context is a knowledge gap, not a competence gap. A toxic team confuses the two.
+4. **Experience and Knowledge Gaps Are Different Things:** Not knowing institutional context is a knowledge gap, not a competence gap. A toxic team confuses the two.
 
-5. **Sometimes You Need to Walk Away** — Your mental health and career trajectory are more valuable than any single job. Toxic environments are structural problems you can't fix individually.
+5. **Sometimes You Need to Walk Away:** Your mental health and career trajectory are more valuable than any single job. Toxic environments are structural problems you can't fix individually.
 
-6. **You Learn More Than You Realise** — Even in difficult situations, your brain is absorbing information. The knowledge might just be locked away behind anxiety until you change environments.
+6. **You Learn More Than You Realise:** Even in difficult situations, your brain is absorbing information. The knowledge might just be locked away behind anxiety until you change environments.
 
 <details>
 <summary class="inline-flex items-center gap-2 rounded-lg bg-muted px-3 py-1.5 text-sm font-medium transition-colors hover:bg-muted/80 hover:text-accent">See full breakdown</summary>
@@ -190,25 +190,15 @@ If you're not in that environment, consider whether it's worth staying.
 
 Here's what helped me break free:
 
-**1. Find Your People**
+1. **Find Your People:** Seek out colleagues, communities, and mentors who genuinely support your growth. Not people who pay lip service to learning, but people who actively create environments where it's safe to not know things. Look for communities where questions are met with enthusiasm rather than judgement: tech meetups, online developer communities, mentorship programs, or even just colleagues who make you feel energised rather than drained. Pay attention to how people respond when you're vulnerable about not knowing something. That response tells you everything you need to know about whether they're your people.
 
-Seek out colleagues, communities, and mentors who genuinely support your growth. Not people who pay lip service to learning, but people who actively create environments where it's safe to not know things. Look for communities where questions are met with enthusiasm rather than judgement: tech meetups, online developer communities, mentorship programs, or even just colleagues who make you feel energised rather than drained. Pay attention to how people respond when you're vulnerable about not knowing something. That response tells you everything you need to know about whether they're your people.
+2. **Invest in Yourself:** Build confidence through deliberate learning and challenging projects. When I left that toxic environment, I spent months deliberately learning. Not because I was fundamentally incompetent, but because I wanted to build confidence in my abilities. I studied system design, worked on side projects that challenged me, and took time to truly understand the concepts I'd been exposed to. The key difference from my previous experience was that I was learning for myself, not to prove anything to anyone else. That shift in motivation made all the difference.
 
-**2. Invest in Yourself**
+3. **Recognise Your Growth:** Keep tangible records of what you've learnt and accomplished. When impostor syndrome strikes (and it will, even years later), you'll have concrete evidence of your capabilities. This could be a "brag document" where you note your wins, a personal log of technical challenges you've overcome, or even just a folder of positive feedback. When self-doubt creeps in, you can look back and see objective evidence of your growth.
 
-When I left that toxic environment, I spent months deliberately learning. Not because I was fundamentally incompetent, but because I wanted to build confidence in my abilities. I studied system design, worked on side projects that challenged me, and took time to truly understand the concepts I'd been exposed to. The key difference from my previous experience was that I was learning for myself, not to prove anything to anyone else. That shift in motivation made all the difference. The investment paid off enormously.
+4. **Set Boundaries:** Your mental health is more important than proving yourself to any employer. You don't owe any job your mental health. If an environment is making you question your fundamental worth as an engineer, it's time to set boundaries or leave. This might mean refusing to work excessive hours, pushing back on unreasonable expectations, or being willing to say "I don't know" without apologising profusely. Sometimes boundaries are enough to improve a difficult situation. But if you find yourself constantly fighting to maintain basic respect and psychological safety, that's a sign the environment itself is the problem, and it's time to consider leaving.
 
-**3. Recognise Your Growth**
-
-Keep a record of what you've learnt and accomplished. When impostor syndrome strikes (and it will, even years later), you'll have concrete evidence of your capabilities. This could be a "brag document" where you note your wins, a personal log of technical challenges you've overcome, or even just a folder of positive feedback. When self-doubt creeps in, you can look back and see objective evidence of your growth. It's much harder to convince yourself you're an impostor when you have a document full of proof that you're not.
-
-**4. Set Boundaries**
-
-You don't owe any job your mental health. If an environment is making you question your fundamental worth as an engineer, it's time to set boundaries or leave. This might mean refusing to work excessive hours, pushing back on unreasonable expectations, or being willing to say "I don't know" without apologising profusely. Sometimes boundaries are enough to improve a difficult situation. But if you find yourself constantly fighting to maintain basic respect and psychological safety, that's a sign the environment itself is the problem, and it's time to consider leaving.
-
-**5. Therapy and Professional Support**
-
-If possible, seek professional help. I didn't realise how much the experience had affected me until I started talking about it with a therapist. Therapy helped me separate what was my responsibility from what was the environment's failure, and gave me tools to rebuild my confidence. My ADHD diagnosis also helped me understand why I struggled so much in certain environments, and why I was particularly vulnerable to the toxic dynamics I experienced. There's no shame in seeking help; in fact, it's one of the most professional things you can do for your career.
+5. **Therapy and Professional Support:** Seek help to process the experience and rebuild your confidence. If possible, seek professional help. Therapy helped me separate what was my responsibility from what was the environment's failure, and gave me tools to rebuild my confidence. My ADHD diagnosis also helped me understand why I struggled so much in certain environments, and why I was particularly vulnerable to the toxic dynamics I experienced. There's no shame in seeking help; in fact, it's one of the most professional things you can do for your career.
 
 ## Looking Back
 
