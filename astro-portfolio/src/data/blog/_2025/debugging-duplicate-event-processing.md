@@ -15,9 +15,43 @@ tags:
   - dependency-injection
 ---
 
+## TL;DR
+
+**The Bug:** Domain events in EF Core integration tests were being processed twice.
+
+**The Investigation:** We spent 4 days testing wild theories:
+- ❌ Transient DbContext causing interceptor sharing
+- ❌ Transaction lifecycle calling interceptors twice
+- ❌ ChangeTracker.DetectChanges re-entrancy
+- ❌ NpgsqlExecutionStrategy retrying operations
+
+**The Truth:** `WebApplicationFactory` was registering the DbContext configuration twice, creating two interceptor instances. We only found it when we stopped assuming and started enumerating what was *actually* registered.
+
+**The Fix:**
+1. Made Onward's `AddDbContext` idempotent (check for existing interceptors before adding)
+2. Added deduplication with `HashSet<Guid>` instead of `List<Guid>`
+
+**The Lesson:** Sometimes the simplest explanation (double registration) is the right one. You just won't find it until you've eliminated all the complex ones. Also: stack traces can be misleading when you're making wrong assumptions.
+
+---
+
+## Introduction
+
 This document chronicles a four-day debugging journey to track down why domain events in our Onward library were being processed twice. What started as a simple "events are duplicating" bug turned into a deep dive through Entity Framework Core's internals, dependency injection scoping, execution strategies, and ultimately led us to an unexpected culprit hiding in the test infrastructure.
 
 **Spoiler:** The issue wasn't where we thought it was. Not even close. We went through four different theories before finding the truth.
+
+## Quick Navigation
+
+- **[Part 1: The Setup](#background-the-onward-library)** - What's Onward and how did we break it?
+- **[Part 2: The Investigation](#the-investigation)** - Three days of dead ends
+  - [Day 1: DbContext Lifetime](#day-1-the-dbcontext-lifetime-rabbit-hole)
+  - [Day 2: EF Core Internals](#day-2-the-ef-core-internals-deep-dive)
+  - [Day 3: Execution Strategies](#day-3-the-execution-strategy-red-herring)
+- **[Part 3: The Breakthrough](#day-4-the-breakthrough)** - When the theory was crazier than the bug
+- **[Part 4: The Solution](#the-solution)** - Two approaches: prevention and resilience
+- **[Part 5: What We Learned](#what-we-learned)** - The valuable bits
+- **[Appendices](#appendices)** - EF Core deep dives
 
 ## Background: The Onward Library
 
@@ -282,13 +316,15 @@ After a full day investigating execution strategies:
 
 ## Day 4: The Breakthrough
 
-### A Fresh Perspective
+### A Wild, Desperate Theory
 
-On the morning of day 4, completely out of obvious theories and running on pure desperation, we threw a wild idea at the wall:
+On the morning of day 4, completely out of obvious theories and running on pure desperation, we threw an idea at the wall - one we didn't actually expect to be true:
 
 **What if there are TWO interceptors?**
 
-This seemed ridiculous. We'd proven that scopes don't share interceptors. We'd proven no re-entrancy. We'd proven no retry logic. But we were out of ideas, so we tested it anyway.
+This seemed ridiculous. We'd proven that scopes don't share interceptors. We'd proven no re-entrancy. We'd proven no retry logic. The idea that we'd somehow accidentally registered the interceptor type twice during configuration felt like a Hail Mary theory.
+
+But we were out of ideas, so we tested it anyway.
 
 ### The Smoking Gun
 
@@ -308,231 +344,56 @@ foreach (var interceptor in interceptors)
 
 **Output:**
 ```
-Interceptor: SaveChangesInterceptor`1 (Hash: 016E492A)
+Interceptor: SaveChangesInterceptor (Hash: 016E492A)
 Interceptor: OnConnectingInterceptor (Hash: 01234ABC)
-Interceptor: SaveChangesInterceptor`1 (Hash: 02F3C7DE)  ← DUPLICATE!
+Interceptor: SaveChangesInterceptor (Hash: 02F3C7DE)  ← DUPLICATE!
 Interceptor: OnConnectingInterceptor (Hash: 03456DEF)  ← DUPLICATE!
 ```
 
-**There it was.** Two instances of `SaveChangesInterceptor<TContext>`. Not shared across scopes. Just... registered twice.
+**There it was.** Two instances of `SaveChangesInterceptor<TContext>`. Two instances of `OnConnectingInterceptor`.
 
-### Finding the Source
+The wild theory was true. Not shared across scopes. Just... registered twice.
 
-Here's where it got tricky. Onward is a NuGet package with its own `AddDbContext` extension method:
+### Finding the Root Cause
 
+The problem was in how we set up our integration tests. Here's what happened:
+
+**Step 1: Production Startup** (`Program.cs`)
 ```csharp
-// In the Onward library (NuGet package)
-public static IServiceCollection AddDbContext<TContext>(
-    this IServiceCollection services,
-    Action<IServiceProvider, DbContextOptionsBuilder> optionsAction,
-    ServiceLifetime contextLifetime = ServiceLifetime.Scoped,
-    ServiceLifetime optionsLifetime = ServiceLifetime.Scoped)
-    where TContext : DbContext
+services.AddShoppingCartContext(() => connectionString);
+```
+
+This calls Onward's `AddDbContext`, which internally registers:
+- `DbContext`
+- `DbContextOptions`
+- `IDbContextOptionsConfiguration<ShoppingCartContext>` (hidden!)
+
+**Step 2: Test Setup** (WebApplicationFactory)
+```csharp
+protected override void ConfigureTestServices(IServiceCollection services)
 {
-    // Register Onward services
-    services.AddScoped<SaveChangesInterceptor<TContext>>();
-    services.AddTransient<OnConnectingInterceptor>();
-    // ... other Onward services ...
+    services.RemoveAll(typeof(ShoppingCartContext));
+    services.RemoveAll(typeof(DbContextOptions<ShoppingCartContext>));
 
-    // Register the DbContext with EF Core
-    services.AddDbContext<TContext>(
-        OptionsActionOverride,
-        contextLifetime,
-        optionsLifetime);
-
-    return services;
-
-    // Local function that wraps the user's configuration
-    void OptionsActionOverride(IServiceProvider sp, DbContextOptionsBuilder builder)
-    {
-        optionsAction(sp, builder);
-
-        // Add Onward's interceptors
-        builder.AddInterceptors(
-            sp.GetRequiredService<SaveChangesInterceptor<TContext>>(),
-            sp.GetRequiredService<OnConnectingInterceptor>());
-    }
+    services.AddShoppingCartContext(() => testConnectionString);
 }
 ```
 
-In our test infrastructure, we had:
+The problem: **`RemoveAll` doesn't remove `IDbContextOptionsConfiguration<TContext>`!**
 
-```csharp
-public class IntegrationTestWebApplicationFactory : WebApplicationFactory<Program>
-{
-    protected override void ConfigureTestServices(IServiceCollection services)
-    {
-        // We tried to replace the DbContext for testing
-        services.RemoveAll(typeof(ShoppingCartContext));
-        services.RemoveAll(typeof(DbContextOptions<ShoppingCartContext>));
+So when we call `AddShoppingCartContext` again, EF Core registers a second configuration, and now there are TWO. When `DbContextOptions` are resolved, both configurations run, and both add interceptors.
 
-        // Then registered it again for tests
-        services.AddShoppingCartContext(() => testConnectionString);
-    }
-}
-```
-
-**The Critical Mistake:**
-
-1. **Production startup** (`Program.cs`) called `AddShoppingCartContext` → Registered interceptors and `IDbContextOptionsConfiguration<ShoppingCartContext>`
-2. **Test setup** called `services.RemoveAll()` → Removed DbContext and DbContextOptions services
-3. **BUT** `RemoveAll` doesn't remove `IDbContextOptionsConfiguration<ShoppingCartContext>`!
-4. **Test setup** called `AddShoppingCartContext` again → Registered interceptors and **ANOTHER** `IDbContextOptionsConfiguration<ShoppingCartContext>`
-
-Now DI had **TWO `IDbContextOptionsConfiguration<ShoppingCartContext>` registrations**!
-
-**Diagram 1: Production Registration**
-
-```mermaid
-sequenceDiagram
-    participant Prod as Program.cs
-    participant SC as ServiceCollection
-    participant EF as EF Core
-
-    Note over Prod,EF: 🟢 Initial startup - Production registration
-
-    Prod->>SC: AddShoppingCartContext()
-    SC->>EF: AddDbContext()
-    EF->>SC: Add IDbContextOptionsConfiguration #1<br/>(registers interceptor)
-    Note over SC: Service registered: IDbContextOptionsConfiguration #1
-```
-
-**Diagram 2: Test Override Problem**
-
-```mermaid
-sequenceDiagram
-    participant Test as ConfigureTestServices
-    participant SC as ServiceCollection
-    participant Options as DbContextOptionsFactory
-
-    Note over Test,Options: 🧪 Test infrastructure setup
-
-    Test->>SC: RemoveAll(ShoppingCartContext)
-    Test->>SC: RemoveAll(DbContextOptions)
-    Note over SC: ⚠️ IDbContextOptionsConfiguration #1<br/>is NOT removed!
-
-    Test->>SC: AddShoppingCartContext()
-    SC->>SC: AddDbContext() again
-    Note over SC: Adds IDbContextOptionsConfiguration #2
-
-    Note over SC: DI now has BOTH #1 and #2!
-
-    Options->>SC: GetServices(IDbContextOptionsConfiguration)
-    SC-->>Options: Returns [#1, #2]
-
-    loop Each configuration
-        Options->>Options: configuration.Configure()<br/>→ builder.AddInterceptors()
-    end
-
-    Note over Options: ❌ Final result: 2x SaveChangesInterceptor
-```
-
-### Understanding EF Core's Options Creation
-
-When `DbContextOptions<TContext>` is resolved from DI, EF Core calls `CreateDbContextOptions`:
-
-```csharp
-private static DbContextOptions<TContext> CreateDbContextOptions(
-    IServiceProvider applicationServiceProvider)
-{
-    var builder = new DbContextOptionsBuilder<TContext>(...);
-
-    // GetServices returns ALL registered IDbContextOptionsConfiguration<TContext>
-    foreach (var configuration in
-        applicationServiceProvider.GetServices<IDbContextOptionsConfiguration<TContext>>())
-    {
-        configuration.Configure(applicationServiceProvider, builder);
-        // ↑ This calls YOUR lambda: (sp, builder) => { builder.AddInterceptors(...) }
-        // ↑ Called ONCE for EACH registered configuration!
-    }
-
-    return builder.Options;
-}
-```
-
-**In our case:**
-- First configuration (from production startup) → Executes: `builder.AddInterceptors(sp.GetRequiredService<SaveChangesInterceptor>())`
-- Second configuration (from test setup) → Executes: `builder.AddInterceptors(sp.GetRequiredService<SaveChangesInterceptor>())` **AGAIN**
-
-Looking at `CoreOptionsExtension.WithInterceptors`:
-
-```csharp
-public virtual CoreOptionsExtension WithInterceptors(IEnumerable<IInterceptor> interceptors)
-{
-    var clone = Clone();
-    clone._interceptors = _interceptors == null
-        ? interceptors
-        : _interceptors.Concat(interceptors);  // ← CONCATENATES to existing list!
-    return clone;
-}
-```
-
-Each call to `builder.AddInterceptors()` **concatenates** to the existing interceptor list. Result: Two interceptor instances in the final options!
-
-### Why the Two Interceptors Caused Duplicates
-
-**Diagram 1: SavingChangesAsync Phase - Both Interceptors Extract the Same Event**
-
-```mermaid
-sequenceDiagram
-    participant App as Application
-    participant EF as EF Core
-    participant Int1 as Interceptor 1
-    participant Int2 as Interceptor 2
-    participant CT as ChangeTracker
-
-    Note over App,CT: ⚠️ Two interceptor instances registered
-
-    App->>EF: SaveChangesAsync()
-    Note over EF: EF Core invokes both interceptors
-
-    par Int1 executes
-        EF->>Int1: SavingChangesAsync()
-        Int1->>CT: Extract + add domain event<br/>ID: 9affe28b
-        Int1->>Int1: Track ID in _added ✓
-    and Int2 executes
-        EF->>Int2: SavingChangesAsync()
-        Int2->>CT: Finds same event ID<br/>(already added by Int1)
-        Int2->>Int2: Track duplicate ID ⚠️
-    end
-
-    Note over EF,CT: Result — both interceptors track<br/>the same event → duplicate processing
-```
-
-**Diagram 2: SavedChangesAsync Phase - Both Process the Same Event**
-
-```mermaid
-sequenceDiagram
-    participant EF as EF Core
-    participant Int1 as Interceptor 1
-    participant Int2 as Interceptor 2
-    participant EventProcessor as Event Processor
-
-    Note over Int1,Int2: Both have same event ID<br/>in their _added lists
-
-    EF->>EF: Persist to database
-
-    par Int1 Processes Events
-        EF->>Int1: SavedChangesAsync()
-        Int1->>EventProcessor: Process 9affe28b ✓
-    and Int2 Processes Events
-        EF->>Int2: SavedChangesAsync()
-        Int2->>EventProcessor: Process 9affe28b ✓
-    end
-
-    rect rgb(200, 100, 100)
-        Note over Int1,Int2: ❌ DUPLICATE PROCESSING:<br/>Same event processed TWICE!
-    end
-```
+The result: Two interceptor instances, each with its own `_added` list, both processing the same event.
 
 ### Why This Was So Hard to Find
 
-1. **The code was split across different codebases** - Onward's `AddDbContext` is in a NuGet package, `ConfigureTestServices` is in the consuming application
-2. **Onward's own tests didn't show the issue** - They don't use `WebApplicationFactory`, so there's no double registration
-3. **`RemoveAll` appeared to work** - It removed the obvious services but not the hidden `IDbContextOptionsConfiguration<TContext>`
-4. **The logs showed the same interceptor hash** - We didn't log during interceptor construction
-5. **The stack traces were identical** - Both interceptors were invoked as part of the same `SaveChangesAsync` call
-6. **The re-entrancy theory seemed plausible** - We initially assumed EF Core would call interceptors multiple times when you modify the ChangeTracker
+- **The code was split across codebases** - Onward's `AddDbContext` is in a NuGet package, the test setup is in the consuming app
+- **Onward's own tests never showed it** - They don't use `WebApplicationFactory`, so no double registration
+- **`RemoveAll` looked like it worked** - It removed the obvious services, but not the hidden `IDbContextOptionsConfiguration`
+- **The logs were misleading** - We saw what looked like one interceptor being called twice, but it was actually two interceptors called once each
+- **The stack traces were identical** - Both interceptors were invoked in the same `SaveChangesAsync` call, so of course they had the same trace
+
+For more technical details, see [Appendix A: How EF Core's AddDbContext Works](#appendix-a-how-ef-cores-adddbcontext-works).
 
 ## The Solution
 
@@ -620,73 +481,158 @@ public class SaveChangesInterceptor<TContext> : ISaveChangesInterceptor
 - **Prevention:** Fixes the root cause. No duplicate interceptors = no duplicate processing.
 - **Resilience:** Protects against future configuration mistakes and unexpected edge cases.
 
-## Lessons Learned
+## What We Learned
 
-### 1. Stack Traces Can Be Misleading
+### The 7 Key Lessons
 
-Identical stack traces don't mean the same code path is being executed twice. In our case, it meant two different instances were being called once each.
+**1. Stack Traces Can Be Misleading**
+Identical stack traces don't mean the same code is running twice. In our case, two different interceptor instances ran once each through the same pipeline.
+→ *Log instance identity (hash codes) in addition to stack traces.*
 
-### 2. Always Verify Your Hypotheses
+**2. Verify Your Hypotheses**
+We tested four theories before finding the truth. Each seemed plausible. Each had supporting evidence. Only by actually testing (not just assuming) did we discover what was really happening.
+→ *Don't stop at the first plausible explanation. Test thoroughly.*
 
-Each theory made sense. Each had supporting evidence. The key was actually testing each one thoroughly. Only through proper testing did we discover EF Core handles ChangeTracker modifications gracefully—it doesn't retrigger interceptors.
+**3. Don't Assume You Know What Extension Methods Register**
+`AddDbContext` registers `IDbContextOptionsConfiguration<TContext>` internally. It's not in the public API. `RemoveAll` doesn't clear it. We only found this by reading EF Core source code.
+→ *When using `RemoveAll` to replace services, understand it may not remove everything. Consider avoiding re-registration patterns when possible.*
 
-### 3. NuGet Packages Need Defensive Design
+**4. NuGet Packages Need Idempotency**
+The bug only appeared in consuming apps, not in Onward's tests. Different patterns, different results. Safe extension methods should be callable multiple times without breaking.
+→ *Design extension methods to be idempotent.*
 
-The bug only appeared in consuming services, not in Onward's own tests. When building NuGet packages, design for idempotency. Assume consuming services will call your registration methods multiple times.
+**5. Test Infrastructure Deserves Scrutiny**
+The bug was in `WebApplicationFactory`, not in library code. We debugged the library for days when the issue was in how we were testing it.
+→ *Test infrastructure is production code. Debug it the same way.*
 
-### 4. Test Your Test Infrastructure
+**6. EF Core Doesn't Prevent Duplicate Interceptors**
+EF Core allows multiple interceptors of the same type by design (enables flexibility). But configuration errors don't get caught automatically.
+→ *Either prevent duplicate registration or implement deduplication logic.*
 
-The bug was in the `WebApplicationFactory` setup, not in production code. Test infrastructure deserves the same scrutiny as production code.
+**7. Step Back When Stuck**
+After two days of deep dives, we were exhausted. On day 4 with fresh eyes, we asked a different question. That broke through.
+→ *When investigating stuck, stepping back often leads to the breakthrough.*
 
-### 5. Don't Assume You Know What Framework Extension Methods Register
+### For EF Core Users
 
-`AddDbContext` registers multiple internal types:
-1. The DbContext itself (obvious)
-2. The DbContextOptions (obvious)
-3. **`IDbContextOptionsConfiguration<TContext>`** (hidden implementation detail)
+**Interceptor scoping works correctly** - If using scoped interceptors with scoped DbContexts, each scope gets its own instance. Both Scoped and Transient context lifetimes work correctly.
 
-Using `RemoveAll` to "clean up" before re-registering is fragile. If you must re-register, understand that you may not be removing everything.
+**EF Core doesn't call interceptors multiple times** - Modifying the ChangeTracker during `SavingChangesAsync` does NOT cause the interceptor to be called multiple times. If you see duplicate processing, you likely have multiple interceptor instances registered.
 
-### 6. Sometimes You Need to Step Back
+**Be careful with `AddDbContext`** - Calling it multiple times doesn't replace previous configurations, it appends to them. No deduplication happens automatically.
 
-After two days of deep diving, we were stuck. We took a break, came back with fresh eyes, and asked a different question. That led to the breakthrough.
+**Implement defensive deduplication** - Even after fixing the root cause, make your interceptors resilient to duplicate registrations with logic like `HashSet<T>` and ID checking.
 
-## Key Takeaways for EF Core Developers
+## Quick Reference: "My Interceptor is Being Called Twice!"
 
-### Interceptor Scoping Works Correctly
+If you're debugging duplicate event processing in EF Core, use this checklist:
 
-If you're using scoped interceptors with scoped DbContexts:
-- ✅ Each scope WILL get its own interceptor instance
-- ✅ EF Core resolves interceptors lazily from the scoped service provider
-- ✅ Both Scoped and Transient context lifetimes work correctly
+**Step 1: Verify Multiple Instances**
+```csharp
+var interceptors = dbContext.GetService<IEnumerable<ISaveChangesInterceptor>>();
+foreach (var i in interceptors)
+{
+    Console.WriteLine($"{i.GetType().Name}: {RuntimeHelpers.GetHashCode(i):X8}");
+}
+// Do you see the same type twice with different hashes?
+```
 
-### EF Core Does NOT Call Interceptors Multiple Times
+**Step 2: Check for Double Registration**
+- Did you call `AddDbContext` more than once?
+- Did you use `RemoveAll` + re-register?
+- Did you change a service lifetime and forget to clean up?
 
-If you modify the ChangeTracker inside `SavingChangesAsync`:
-- ✅ EF Core does NOT call your interceptor multiple times due to ChangeTracker modifications
-- ✅ Each registered interceptor instance is called ONCE per save operation
-- ✅ If you see duplicate processing, you likely have multiple interceptor instances registered
+**Step 3: Use Deduplication**
+Change `_added` to a `HashSet<Guid>` and filter before processing:
+```csharp
+private List<Guid> GetAddedEventIds(DbContext context)
+{
+    return context.ChangeTracker.Entries()
+        .Where(x => x.Entity.GetType() == typeof(Event) && x.State == EntityState.Added)
+        .Select(entry => ((Event)entry.Entity).Id)
+        .Where(id => !_added.Contains(id))  // Only add if not already tracked
+        .ToList();
+}
+```
 
-### Be Careful with AddDbContext
+**Step 4: Make Registration Idempotent**
+Check if interceptors are already registered before adding:
+```csharp
+var existingInterceptors = builder.Options.Extensions
+    .OfType<CoreOptionsExtension>()
+    .SelectMany(e => e.Interceptors ?? [])
+    .ToList();
 
-Calling `AddDbContext` multiple times:
-- ❌ Does NOT replace the previous configuration
-- ✅ DOES append to existing configuration
-- ❌ Does NOT deduplicate interceptors
+if (!existingInterceptors.OfType<MyInterceptor>().Any())
+{
+    builder.AddInterceptors(sp.GetRequiredService<MyInterceptor>());
+}
+```
 
-## Timeline Summary
+---
 
-**Day 1:** DbContext Lifetime Investigation → ❌ Hypothesis disproven
+## Appendices
 
-**Day 2:** EF Core Internals Deep Dive → ❌ Theories seemed plausible but didn't pan out
+### Appendix A: How EF Core's AddDbContext Works
 
-**Day 3:** Execution Strategy Investigation → ❌ No retry configured, no transient failures
+When you call `AddDbContext`, it registers three main services:
 
-**Day 4:** The Breakthrough → ✅ Found TWO `IDbContextOptionsConfiguration<TContext>` registrations
+1. **DbContext<TContext>** - The context itself (obvious)
+2. **DbContextOptions<TContext>** - The options (obvious)
+3. **IDbContextOptionsConfiguration<TContext>** - The configuration wrapper (hidden!)
 
-**Total Time:** 4 days of investigation, countless tests, and multiple false starts.
+The third one is internal. It stores your `optionsAction` lambda and gets called when `DbContextOptions` are resolved:
 
-**Root Cause:** `WebApplicationFactory` calling `AddDbContext` twice, and `RemoveAll` not clearing `IDbContextOptionsConfiguration<TContext>` registrations.
+```csharp
+// In EF Core source (simplified)
+foreach (var configuration in applicationServiceProvider
+    .GetServices<IDbContextOptionsConfiguration<TContext>>())
+{
+    configuration.Configure(applicationServiceProvider, builder);
+    // Your lambda runs here!
+}
+```
+
+**The Problem:** `RemoveAll` doesn't remove `IDbContextOptionsConfiguration<TContext>`.
+
+So if you do this:
+```csharp
+services.RemoveAll(typeof(DbContext<TContext>));
+services.RemoveAll(typeof(DbContextOptions<TContext>));
+services.AddDbContext<TContext>(...);  // Registers AGAIN
+```
+
+You end up with:
+- ✅ New DbContext service (RemoveAll worked)
+- ✅ New DbContextOptions service (RemoveAll worked)
+- ❌ Old + New IDbContextOptionsConfiguration (RemoveAll didn't touch it!)
+
+Result: Your `optionsAction` runs twice, calling `AddInterceptors` twice.
+
+### Appendix B: Full EF Core Call Chain
+
+If you want to understand exactly what happens, here's the call chain when `AddDbContext` registers interceptors:
+
+```
+AddDbContext<TContext>(optionsAction)
+  ↓
+AddCoreServices<TContext>()
+  ↓
+ConfigureDbContext<TContext>(optionsAction)  // ← Uses services.Add()
+  ↓ (later, when DbContextOptions are resolved)
+CreateDbContextOptions<TContext>()
+  ↓
+for each IDbContextOptionsConfiguration<TContext>:
+    configuration.Configure(sp, builder)
+      ↓
+    optionsAction(sp, builder)  // YOUR LAMBDA RUNS HERE
+      ↓
+    builder.AddInterceptors()   // If you added them here
+      ↓
+    CoreOptionsExtension.WithInterceptors()  // CONCATENATES to existing list!
+```
+
+The key insight: `WithInterceptors()` doesn't replace, it concatenates. Multiple configurations = multiple adds = multiple interceptor instances.
 
 ## Conclusion
 
@@ -696,17 +642,7 @@ All of which turned out to be red herrings.
 
 The actual bug? A simple double registration in test setup code.
 
-Sometimes the simplest explanation is the right one. But you won't know that until you've eliminated all the complex ones.
-
-If you're experiencing similar issues with EF Core interceptors:
-
-1. **Check your service registrations** - Are interceptors registered multiple times?
-2. **Log instance identity** - Use `RuntimeHelpers.GetHashCode()` to track unique instances
-3. **Enumerate interceptors** - Check what's actually registered in your DbContext
-4. **Implement deduplication** - Make your interceptors resilient to multiple calls
-5. **Test your assumptions** - Don't trust intuition, verify with diagnostics
-
-And remember: Three days of debugging can save you from fifteen minutes of reading the configuration code.
+**The lesson:** Sometimes the simplest explanation is the right one. But you won't know that until you've eliminated all the complex ones. And sometimes that takes four days, three dead ends, and one desperate wild theory.
 
 Happy debugging!
 
