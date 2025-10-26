@@ -17,10 +17,6 @@ At one point in my career, I genuinely questioned whether I had chosen the wrong
 
 ![Person looking stressed while working at computer](@/assets/images/blog/impostor-syndrome-stressed.jpg)
 
-## Table of contents
-
-![Crossroads representing a career decision](@/assets/images/blog/career-crossroads.jpg)
-
 ## The Job That Changed Everything (For Better and Worse)
 
 After being made redundant from my previous role, I found myself with two opportunities. One was with a major UK tech company, a household name that would have looked impressive on any CV. The other was another large company where a former colleague had recommended me. The role would involve working with technologies I had barely touched: event-driven architectures, Domain-Driven Design, containerisation, Pub/Sub messaging, and CQRS patterns.
@@ -210,6 +206,8 @@ I'm not saying you're perfect. I'm not saying you don't have things to learn. Wh
 If you're not in that environment, consider whether it's worth staying.
 
 ## The Path Forward
+
+![Crossroads representing a career decision](@/assets/images/blog/career-crossroads.jpg)
 
 Here's what helped me break free:
 

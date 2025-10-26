@@ -20,15 +20,15 @@ if (mainHeadings.length < 2) {
 <button
   id="toc-toggle"
   class:list={[
-    "rounded-md p-2 transition-colors",
-    "hover:bg-muted hover:text-accent",
-    "focus-visible:outline-2 focus-visible:outline-accent",
+    "focus-outline flex items-center gap-2 rounded-lg bg-muted px-3 py-1 transition-colors hover:bg-muted/80 hover:text-accent",
   ]}
   aria-label="Toggle table of contents"
   aria-expanded="false"
   aria-controls="toc-menu"
 >
-  <IconMenuDeep class="size-5" />
+  <IconMenuDeep class="size-5 md:hidden" />
+  <span class="hidden md:inline text-sm font-medium">Table of contents</span>
+  <IconMenuDeep class="hidden md:inline size-5" />
 </button>
 
 <!-- TOC Dropdown Menu -->
