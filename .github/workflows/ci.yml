@@ -31,18 +31,16 @@ jobs:
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
+        
+      - name: Enable Corepack for Yarn 4
+        run: corepack enable
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "none"
-
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Prepare Yarn 4
-        run: corepack prepare yarn@4.10.3 --activate
+          cache: "yarn"
+          cache-dependency-path: astro-portfolio/yarn.lock
 
       - name: "📦 Install dependencies"
         run: yarn install --frozen-lockfile
