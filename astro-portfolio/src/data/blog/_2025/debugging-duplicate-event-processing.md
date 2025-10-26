@@ -41,18 +41,6 @@ This document chronicles a four-day debugging journey to track down why domain e
 
 **Spoiler:** The issue wasn't where we thought it was. Not even close. We went through four different theories before finding the truth.
 
-## Quick Navigation
-
-- **[Part 1: The Setup](#background-the-onward-library)** - What's Onward and how did we break it?
-- **[Part 2: The Investigation](#the-investigation)** - Three days of dead ends
-  - [Day 1: DbContext Lifetime](#day-1-the-dbcontext-lifetime-rabbit-hole)
-  - [Day 2: EF Core Internals](#day-2-the-ef-core-internals-deep-dive)
-  - [Day 3: Execution Strategies](#day-3-the-execution-strategy-red-herring)
-- **[Part 3: The Breakthrough](#day-4-the-breakthrough)** - When the theory was crazier than the bug
-- **[Part 4: The Solution](#the-solution)** - Two approaches: prevention and resilience
-- **[Part 5: What We Learned](#what-we-learned)** - The valuable bits
-- **[Appendices](#appendices)** - EF Core deep dives
-
 ## Background: The Onward Library
 
 Onward is our implementation of the Transactional Outbox pattern for Entity Framework Core. It works by:
