@@ -59,83 +59,56 @@ if (mainHeadings.length < 2) {
   </ul>
 </nav>
 
-<script>
-  {
-    const tocToggle = document.getElementById("toc-toggle");
-    const tocMenu = document.getElementById("toc-menu");
+<script is:inline>
+  function initTOC() {
+    const toggle = document.getElementById("toc-toggle");
+    const menu = document.getElementById("toc-menu");
 
-    if (!tocToggle || !tocMenu) return;
+    if (!toggle || !menu) return;
 
-    let tocOpen = false;
+    let isOpen = false;
 
-    function closeToc() {
-      tocOpen = false;
-      tocMenu?.classList.add("opacity-0", "pointer-events-none");
-      tocMenu?.classList.remove("opacity-100", "pointer-events-auto");
-      tocToggle?.setAttribute("aria-expanded", "false");
-    }
-
-    function openToc() {
-      tocOpen = true;
-      tocMenu?.classList.remove("opacity-0", "pointer-events-none");
-      tocMenu?.classList.add("opacity-100", "pointer-events-auto");
-      tocToggle?.setAttribute("aria-expanded", "true");
-    }
-
-    // Toggle dropdown on button click
-    tocToggle?.addEventListener("click", () => {
-      tocOpen ? closeToc() : openToc();
-    });
-
-    // Close dropdown when clicking a link
-    document.querySelectorAll("[data-toc-link]").forEach((link) => {
-      link.addEventListener("click", () => {
-        closeToc();
-      });
-    });
-
-    // Close dropdown when clicking outside
-    document.addEventListener("click", (e) => {
-      if (
-        tocOpen &&
-        e.target !== tocToggle &&
-        !tocMenu?.contains(e.target as Node)
-      ) {
-        closeToc();
+    // Toggle menu
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      isOpen = !isOpen;
+      if (isOpen) {
+        menu.classList.remove("opacity-0", "pointer-events-none");
+        menu.classList.add("opacity-100", "pointer-events-auto");
+        toggle.setAttribute("aria-expanded", "true");
+      } else {
+        menu.classList.add("opacity-0", "pointer-events-none");
+        menu.classList.remove("opacity-100", "pointer-events-auto");
+        toggle.setAttribute("aria-expanded", "false");
       }
     });
 
-    // Active section tracking with Intersection Observer
-    const links = document.querySelectorAll("[data-toc-link]");
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const id = entry.target.getAttribute("id");
-          const link = document.querySelector(`[data-toc-link="${id}"]`);
-
-          if (entry.isIntersecting) {
-            // Remove active from all
-            links.forEach((l) => {
-              l.classList.remove("bg-muted", "text-accent");
-            });
-            // Add active to current
-            if (link) {
-              link.classList.add("bg-muted", "text-accent");
-            }
-          }
-        });
-      },
-      { rootMargin: "-50% 0px -50% 0px" }
-    );
-
-    // Observe all heading elements
-    document.querySelectorAll("h2[id], h3[id]").forEach((heading) => {
-      observer.observe(heading);
+    // Close when clicking a link
+    menu.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        isOpen = false;
+        menu.classList.add("opacity-0", "pointer-events-none");
+        menu.classList.remove("opacity-100", "pointer-events-auto");
+        toggle.setAttribute("aria-expanded", "false");
+      });
     });
 
-    // Close menu on page navigation
-    document.addEventListener("astro:before-swap", closeToc);
+    // Close when clicking outside
+    document.addEventListener("click", (e) => {
+      if (isOpen && e.target !== toggle && !menu.contains(e.target)) {
+        isOpen = false;
+        menu.classList.add("opacity-0", "pointer-events-none");
+        menu.classList.remove("opacity-100", "pointer-events-auto");
+        toggle.setAttribute("aria-expanded", "false");
+      }
+    });
   }
+
+  // Run on initial load
+  initTOC();
+
+  // Re-run on page navigation with view transitions
+  document.addEventListener("astro:after-swap", initTOC);
 </script>
 
 <style>
