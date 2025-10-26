@@ -485,33 +485,15 @@ public class SaveChangesInterceptor<TContext> : ISaveChangesInterceptor
 
 ### The 7 Key Lessons
 
-**1. Stack Traces Can Be Misleading**
-Identical stack traces don't mean the same code is running twice. In our case, two different interceptor instances ran once each through the same pipeline.
-→ *Log instance identity (hash codes) in addition to stack traces.*
-
-**2. Verify Your Hypotheses**
-We tested four theories before finding the truth. Each seemed plausible. Each had supporting evidence. Only by actually testing (not just assuming) did we discover what was really happening.
-→ *Don't stop at the first plausible explanation. Test thoroughly.*
-
-**3. Don't Assume You Know What Extension Methods Register**
-`AddDbContext` registers `IDbContextOptionsConfiguration<TContext>` internally. It's not in the public API. `RemoveAll` doesn't clear it. We only found this by reading EF Core source code.
-→ *When using `RemoveAll` to replace services, understand it may not remove everything. Consider avoiding re-registration patterns when possible.*
-
-**4. NuGet Packages Need Idempotency**
-The bug only appeared in consuming apps, not in Onward's tests. Different patterns, different results. Safe extension methods should be callable multiple times without breaking.
-→ *Design extension methods to be idempotent.*
-
-**5. Test Infrastructure Deserves Scrutiny**
-The bug was in `WebApplicationFactory`, not in library code. We debugged the library for days when the issue was in how we were testing it.
-→ *Test infrastructure is production code. Debug it the same way.*
-
-**6. EF Core Doesn't Prevent Duplicate Interceptors**
-EF Core allows multiple interceptors of the same type by design (enables flexibility). But configuration errors don't get caught automatically.
-→ *Either prevent duplicate registration or implement deduplication logic.*
-
-**7. Step Back When Stuck**
-After two days of deep dives, we were exhausted. On day 4 with fresh eyes, we asked a different question. That broke through.
-→ *When investigating stuck, stepping back often leads to the breakthrough.*
+| Lesson | What Happened | Takeaway |
+|--------|---------------|----------|
+| 🎯 Stack Traces Can Be Misleading | Two instances, one call each ≠ one instance, two calls | Log instance identity (hashes) in addition to stack traces |
+| 🔬 Verify Your Hypotheses | Tested 4 theories; only testing revealed the truth | Don't stop at plausible. Test thoroughly |
+| ⚠️ Don't Assume Extension Methods | `AddDbContext` hides `IDbContextOptionsConfiguration<TContext>`; `RemoveAll` won't touch it | Understand what framework methods *actually* register |
+| 📦 NuGet Packages Need Idempotency | Bug only appeared in consuming apps, not Onward's tests | Design extensions to be callable multiple times safely |
+| 🧪 Test Infrastructure Deserves Scrutiny | Debugged library for days; issue was in test setup | Treat test infrastructure as production code |
+| 🛡️ EF Core Doesn't Prevent Duplicates | Multiple interceptors of same type allowed by design | Prevent registration or implement deduplication |
+| 🧠 Step Back When Stuck | Breakthrough came on day 4 with fresh perspective | Exhaustion clouds judgment; stepping back helps |
 
 ### For EF Core Users
 
@@ -542,20 +524,7 @@ foreach (var i in interceptors)
 - Did you use `RemoveAll` + re-register?
 - Did you change a service lifetime and forget to clean up?
 
-**Step 3: Use Deduplication**
-Change `_added` to a `HashSet<Guid>` and filter before processing:
-```csharp
-private List<Guid> GetAddedEventIds(DbContext context)
-{
-    return context.ChangeTracker.Entries()
-        .Where(x => x.Entity.GetType() == typeof(Event) && x.State == EntityState.Added)
-        .Select(entry => ((Event)entry.Entity).Id)
-        .Where(id => !_added.Contains(id))  // Only add if not already tracked
-        .ToList();
-}
-```
-
-**Step 4: Make Registration Idempotent**
+**Step 3: Make Registration Idempotent**
 Check if interceptors are already registered before adding:
 ```csharp
 var existingInterceptors = builder.Options.Extensions
