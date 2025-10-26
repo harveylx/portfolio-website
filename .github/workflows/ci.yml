@@ -47,10 +47,6 @@ jobs:
       - name: "📦 Install dependencies"
         run: yarn install --frozen-lockfile
 
-
-      - name: "📦 Install dependencies"
-        run: yarn install --frozen-lockfile
-
       - name: "🔎 Lint code"
         run: yarn lint
 
