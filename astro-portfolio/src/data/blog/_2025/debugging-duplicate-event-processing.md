@@ -127,11 +127,6 @@ graph LR
         Test2 --> Result2
         Result1 --> Conclusion
         Result2 --> Conclusion
-
-        style Before fill:#6B2C2C,stroke:#D97878,color:#FFF
-        style After fill:#8B1E1E,stroke:#FF4444,color:#FFF
-        style Result2 fill:#2D5C2D,stroke:#6BC66B,color:#FFF
-        style Conclusion fill:#6B5C2D,stroke:#D4C46B,color:#FFF
     end
 ```
 
@@ -232,7 +227,7 @@ sequenceDiagram
     Note over Int: ❌ DUPLICATE PROCESSING!
     Int-->>EF: Return
 
-    rect rgb(139, 30, 30)
+    rect
         Note over App,List: Question: Why is the same interceptor<br/>being called twice at the same stack depth?
     end
 ```
@@ -344,11 +339,6 @@ graph TB
         Idea --> Test
         Test --> Result
         Result --> Truth
-
-        style Question fill:#8B1E1E,stroke:#FF4444,color:#FFF
-        style Idea fill:#6B5C2D,stroke:#D4C46B,color:#FFF
-        style Result fill:#2D5C2D,stroke:#6BC66B,color:#FFF
-        style Truth fill:#2D5C2D,stroke:#6BC66B,color:#FFF
     end
 ```
 
@@ -399,10 +389,6 @@ graph TB
         Check3 --> Find3
         Find3 --> Problem
         Problem --> Root
-
-        style Start fill:#6B5C2D,stroke:#D4C46B,color:#FFF
-        style Problem fill:#8B1E1E,stroke:#FF4444,color:#FFF
-        style Root fill:#8B1E1E,stroke:#FF4444,color:#FFF
     end
 ```
 
@@ -510,7 +496,7 @@ sequenceDiagram
 
     Note over Options: builder now has:<br/>2x SaveChangesInterceptor
 
-    rect rgb(139, 30, 30)
+    rect
         Note over SC,Options: Problem: services.Add() doesn't check<br/>for existing registrations.<br/>RemoveAll doesn't remove configurations.<br/>Result: Duplicate interceptors!
     end
 ```
@@ -603,7 +589,7 @@ sequenceDiagram
         Int2->>Int2: Process 9affe28b ✓
     end
 
-    rect rgb(139, 30, 30)
+    rect
         Note over Int1,Int2: Result: SAME event processed<br/>by TWO different interceptors!
     end
 ```
@@ -652,11 +638,6 @@ graph TB
         Final[Robust system:<br/>Prevention + Defense]
         PR --> Final
         RR --> Final
-
-        style Problem fill:#8B1E1E,stroke:#FF4444,color:#FFF
-        style PR fill:#2D5C2D,stroke:#6BC66B,color:#FFF
-        style RR fill:#2D5C2D,stroke:#6BC66B,color:#FFF
-        style Final fill:#2D5C2D,stroke:#6BC66B,color:#FFF
     end
 ```
 

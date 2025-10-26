@@ -26,7 +26,7 @@ export default defineConfig({
       type: "shiki",
       excludeLangs: ["mermaid"]
     },
-    rehypePlugins: [[rehypeMermaid, { strategy: 'img-svg', dark: 'dark' }]],
+    rehypePlugins: [[rehypeMermaid, { strategy: 'img-svg', dark: true }]],
     shikiConfig: {
       // For more themes, visit https://shiki.style/themes
       themes: { light: "min-light", dark: "night-owl" },
