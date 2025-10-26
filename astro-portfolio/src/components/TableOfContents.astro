@@ -1,0 +1,137 @@
+---
+import IconMenuDeep from "@/assets/icons/IconMenuDeep.svg";
+
+interface Props {
+  headings: { depth: number; slug: string; text: string }[];
+}
+
+const { headings } = Astro.props;
+
+// Filter for H2 only (main headings)
+const mainHeadings = headings.filter(h => h.depth === 2);
+
+// Don't render if too few headings
+if (mainHeadings.length < 2) {
+  throw new Error("Not enough headings for table of contents");
+}
+---
+
+<!-- TOC Dropdown Button -->
+<button
+  id="toc-toggle"
+  class:list={[
+    "focus-outline flex items-center gap-2 rounded-lg bg-muted px-3 py-1 transition-colors hover:bg-muted/80 hover:text-accent",
+  ]}
+  aria-label="Toggle table of contents"
+  aria-expanded="false"
+  aria-controls="toc-menu"
+>
+  <IconMenuDeep class="size-5 md:hidden" />
+  <span class="hidden text-sm font-medium md:inline">Table of contents</span>
+  <IconMenuDeep class="hidden size-5 md:inline" />
+</button>
+
+<!-- TOC Dropdown Menu -->
+<nav
+  id="toc-menu"
+  class:list={[
+    "absolute top-full right-0 z-40 mt-2 w-64 rounded-md border border-muted bg-background",
+    "pointer-events-none opacity-0 transition-opacity duration-200",
+    "max-h-96 overflow-y-auto shadow-lg",
+  ]}
+  aria-label="Table of contents"
+>
+  <ul class="space-y-0 text-sm">
+    {
+      mainHeadings.map((heading, index) => (
+        <li>
+          <a
+            href={`#${heading.slug}`}
+            class:list={[
+              "block px-4 py-2 text-foreground no-underline transition-colors hover:bg-muted hover:text-accent",
+              { "border-t border-muted": index > 0 },
+            ]}
+            data-toc-link={heading.slug}
+          >
+            {heading.text}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<script is:inline>
+  function initTOC() {
+    const toggle = document.getElementById("toc-toggle");
+    const menu = document.getElementById("toc-menu");
+
+    if (!toggle || !menu) return;
+
+    let isOpen = false;
+
+    // Toggle menu
+    toggle.addEventListener("click", e => {
+      e.stopPropagation();
+      isOpen = !isOpen;
+      if (isOpen) {
+        menu.classList.remove("opacity-0", "pointer-events-none");
+        menu.classList.add("opacity-100", "pointer-events-auto");
+        toggle.setAttribute("aria-expanded", "true");
+      } else {
+        menu.classList.add("opacity-0", "pointer-events-none");
+        menu.classList.remove("opacity-100", "pointer-events-auto");
+        toggle.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    // Close when clicking a link
+    menu.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", () => {
+        isOpen = false;
+        menu.classList.add("opacity-0", "pointer-events-none");
+        menu.classList.remove("opacity-100", "pointer-events-auto");
+        toggle.setAttribute("aria-expanded", "false");
+      });
+    });
+
+    // Close when clicking outside
+    document.addEventListener("click", e => {
+      if (isOpen && e.target !== toggle && !menu.contains(e.target)) {
+        isOpen = false;
+        menu.classList.add("opacity-0", "pointer-events-none");
+        menu.classList.remove("opacity-100", "pointer-events-auto");
+        toggle.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
+  // Run on initial load
+  initTOC();
+
+  // Re-run on page navigation with view transitions
+  document.addEventListener("astro:after-swap", initTOC);
+</script>
+
+<style>
+  nav#toc-menu {
+    scrollbar-width: thin;
+  }
+
+  nav#toc-menu::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  nav#toc-menu::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  nav#toc-menu::-webkit-scrollbar-thumb {
+    background: var(--muted);
+    border-radius: 2px;
+  }
+
+  nav#toc-menu::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+  }
+</style>

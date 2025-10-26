@@ -75,4 +75,3 @@ export const SHARE_LINKS: Social[] = [
     icon: IconMail,
   },
 ] as const;
-

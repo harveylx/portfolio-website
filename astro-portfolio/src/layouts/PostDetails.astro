@@ -7,7 +7,7 @@ import Tag from "@/components/Tag.astro";
 import Datetime from "@/components/Datetime.astro";
 import EditPost from "@/components/EditPost.astro";
 import ShareLinks from "@/components/ShareLinks.astro";
-import BackButton from "@/components/BackButton.astro";
+import PostHeaderBar from "@/components/PostHeaderBar.astro";
 import BackToTopButton from "@/components/BackToTopButton.astro";
 import { getPath } from "@/utils/getPath";
 import { slugifyStr } from "@/utils/slugify";
@@ -35,7 +35,7 @@ const {
   hideEditPost,
 } = post.data;
 
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 
 let ogImageUrl: string | undefined;
 
@@ -84,15 +84,12 @@ const nextPost =
 
 <Layout {...layoutProps}>
   <Header />
-  <BackButton />
   <main
     id="main-content"
-    class:list={[
-      "mx-auto w-full max-w-app px-4 pb-12",
-      { "mt-8": !SITE.showBackButton },
-    ]}
+    class:list={["mx-auto w-full max-w-app px-4 pb-12"]}
     data-pagefind-body
   >
+    <PostHeaderBar {headings} />
     <h1
       transition:name={slugifyStr(title)}
       class="inline-block text-2xl font-bold text-accent sm:text-3xl"
@@ -173,7 +170,7 @@ const nextPost =
     // Create the main container div
     const progressContainer = document.createElement("div");
     progressContainer.className =
-      "progress-container fixed top-0 z-10 h-1 w-full bg-background";
+      "progress-container fixed top-0 z-40 h-1 w-full bg-background";
 
     // Create the progress bar div
     const progressBar = document.createElement("div");

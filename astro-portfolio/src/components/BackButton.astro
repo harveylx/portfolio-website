@@ -6,16 +6,14 @@ import { SITE } from "@/config";
 
 {
   SITE.showBackButton && (
-    <div class="mx-auto flex w-full max-w-app items-center justify-start px-2">
-      <LinkButton
-        id="back-button"
-        href="/"
-        class="focus-outline mt-8 mb-2 flex hover:text-foreground/75"
-      >
-        <IconChevronLeft class="inline-block size-6 rtl:rotate-180" />
-        <span>Go back</span>
-      </LinkButton>
-    </div>
+    <LinkButton
+      id="back-button"
+      href="/"
+      class="focus-outline flex items-center gap-2 rounded-lg bg-muted px-3 py-1 transition-colors hover:bg-muted/80"
+    >
+      <IconChevronLeft class="inline-block size-5 rtl:rotate-180" />
+      <span class="text-sm font-medium">Go back</span>
+    </LinkButton>
   )
 }
 
