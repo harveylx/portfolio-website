@@ -89,111 +89,90 @@ I became the engineer I always believed I could be.
 
 ![Person at mountain summit representing achievement and growth](@/assets/images/blog/mountain-summit-success.jpg)
 
-Looking back, I've learnt several crucial things about impostor syndrome and toxic work environments:
+Looking back, I've learnt several crucial things about impostor syndrome and toxic work environments. Here's the quick version:
+
+1. **The Environment Matters More Than You Think** — Your environment shapes your confidence far more than you realize. The same person can thrive in one team and struggle in another.
+
+2. **"It's Okay to Ask Questions" Means Nothing Without Follow-Through** — Words are cheap. Real psychological safety is demonstrated in daily interactions, not onboarding documents.
+
+3. **You Can Become the Impostor** — When you internalize the belief that you're not good enough, you can actually start performing below your capabilities, creating a self-fulfilling prophecy.
+
+4. **Experience and Knowledge Gaps Are Different Things** — Not knowing institutional context is a knowledge gap, not a competence gap. A toxic team confuses the two.
+
+5. **Sometimes You Need to Walk Away** — Your mental health and career trajectory are more valuable than any single job. Toxic environments are structural problems you can't fix individually.
+
+6. **You Learn More Than You Realise** — Even in difficult situations, your brain is absorbing information. The knowledge might just be locked away behind anxiety until you change environments.
+
+<details>
+<summary class="inline-flex items-center gap-2 rounded-lg bg-muted px-3 py-1.5 text-sm font-medium transition-colors hover:bg-muted/80 hover:text-accent">See full breakdown</summary>
 
 ### 1. The Environment Matters More Than You Think
 
-Impostor syndrome isn't just an internal battle. It's profoundly influenced by your environment. You can be a competent engineer in one setting and feel completely inadequate in another, not because your skills have changed, but because the environment has changed how you perceive your skills.
+You can be a competent engineer in one setting and feel completely inadequate in another, not because your skills changed, but because the environment changed how you perceive your skills. I went from feeling incompetent to landing a senior position in a short time, not because I became a different engineer, but because I was finally in an environment that allowed me to demonstrate what I already knew.
 
-Think about it: the same person with the same knowledge can thrive in one team and struggle in another. I went from feeling incompetent to landing a senior position in a relatively short time, not because I suddenly became a different engineer, but because I was finally in an environment that allowed me to demonstrate what I already knew.
+> A toxic environment doesn't just make you feel bad; it actively impairs your ability to function at your best. Conversely, a supportive environment can unlock potential you didn't even know you had.
 
-Your environment shapes your confidence, your willingness to take risks, your ability to learn, and ultimately your performance. A toxic environment doesn't just make you feel bad; it actively impairs your ability to function at your best. Conversely, a supportive environment can unlock potential you didn't even know you had.
+When you're constantly bracing for negative feedback, your brain shifts into defensive mode. Instead of focusing on problem-solving and learning, you're focused on avoiding criticism. This cognitive load is enormous, leaving little mental bandwidth for actual engineering work. Always factor in context when evaluating your skills: Are you truly struggling, or is your environment making it impossible to succeed?
 
-Consider the psychological impact: when you're constantly bracing for negative feedback, your brain shifts into defensive mode. Instead of focusing on problem-solving and learning, you're focused on avoiding criticism. This cognitive load is enormous. You're not just trying to write good code; you're trying to anticipate every possible criticism, second-guessing every decision, and catastrophising every mistake. This leaves little mental bandwidth for actual engineering work.
-
-I've experienced both extremes. In one environment, I spent more time worrying about how my questions would be received than actually solving problems. In another, I felt free to experiment, make mistakes, and learn from them. The difference in my output and growth was staggering, yet my fundamental abilities hadn't changed.
-
-When evaluating your own skills, always factor in the context. Are you truly struggling, or is your environment making it impossible to succeed? Are you making mistakes because you lack ability, or because you're so anxious about making mistakes that you can't think clearly? The distinction matters enormously.
+---
 
 ### 2. "It's Okay to Ask Questions" Means Nothing Without Follow-Through
 
-Words are cheap. If a team says it's okay to ask questions but responds with frustration and sighs when you do, they're not creating a psychologically safe environment. Pay attention to actions, not words.
+Words are cheap. If a team says it's okay to ask questions but responds with frustration and sighs when you do, they're not creating a psychologically safe environment. The toxicity exists in the subtext—the sighs, tone of voice, and body language that communicate something entirely different from what's being said.
 
-This is perhaps one of the most damaging forms of workplace toxicity because it's so insidious. The team can claim they have a healthy learning culture while simultaneously punishing people for learning. It creates cognitive dissonance: you're told one thing but experience another, and you start to question your own perception of reality.
+> Real psychological safety isn't demonstrated in onboarding documents or team charters. It's demonstrated in daily interactions: How do people respond when you don't understand something? Is there patience in their explanations?
 
-I experienced this disconnect constantly. In team meetings and onboarding, the message was clear: "We're here to support you. Never hesitate to ask questions." But the moment I actually did ask a question, the atmosphere would shift. The sighs, the tone of voice, the body language all communicated something entirely different. Over time, I started to doubt my own perception. Was I being too sensitive? Was I imagining the frustration? Maybe I really was asking stupid questions?
+In a truly healthy team, when someone asks a question, the first response is curiosity, not judgement. "That's a great question, let me explain..." instead of "You should know this..." Questions are treated as opportunities to improve documentation and strengthen the team's shared understanding. If your gut tells you that asking questions is dangerous, trust that instinct. Your nervous system is picking up on signals your conscious mind might be rationalising away.
 
-This gaslighting effect is incredibly damaging. You know something is wrong, but you can't point to explicit evidence because the words being said are supportive. The toxicity exists in the subtext, in the non-verbal communication, in the emotional undertones. It's death by a thousand paper cuts, none individually severe enough to report, but collectively devastating.
-
-Real psychological safety isn't about what people say in onboarding documents or team charters. It's demonstrated in the daily interactions: How do people respond when you don't understand something? Is there patience in their explanations? Do they make you feel stupid for asking, or do they respect that you're trying to learn?
-
-Here's a litmus test: in a truly healthy team, when someone asks a question, the first response is curiosity, not judgement. "That's a great question, let me explain..." rather than "You should know this..." The focus is on sharing knowledge, not on why you don't already have it. Questions are treated as opportunities to improve documentation, clarify processes, and strengthen the team's shared understanding.
-
-A truly healthy team doesn't just tolerate questions; they welcome them as opportunities to share knowledge and improve documentation. If your gut tells you that asking questions is dangerous, trust that instinct. Your gut is reading the room correctly, even if the words being spoken suggest otherwise. Your nervous system is picking up on signals that your conscious mind might be trying to rationalise away.
+---
 
 ### 3. You Can Become the Impostor
 
-This is the most insidious aspect of severe impostor syndrome. When you internalise the belief that you're not good enough, you can actually start performing below your capabilities. It becomes a self-fulfilling prophecy. Breaking this cycle requires either changing your environment or actively working to rebuild your confidence.
+When you internalise the belief that you're not good enough, you can actually start performing below your capabilities. It becomes a self-fulfilling prophecy. I became unreliable, stopped caring, procrastinated on challenging work, and avoided sharing ideas—not because I was inherently bad, but because constant negative feedback had eroded my motivation to the point where self-sabotage felt like self-preservation.
 
-The psychological mechanism here is devastating. When you believe you're going to fail anyway, your brain starts to protect you from disappointment by reducing effort. Why try your hardest when it won't be good enough? This creates a vicious cycle: reduced effort leads to poorer results, which confirms your belief that you're not good enough, which further reduces effort.
+> When you believe you're going to fail anyway, your brain starts to protect you by reducing effort. This creates a vicious cycle: reduced effort leads to poorer results, which confirms your belief that you're not good enough.
 
-I lived this cycle. I became unreliable. I stopped caring as much. Not because I was inherently a bad engineer, but because the constant negative feedback had eroded my motivation to the point where self-sabotage felt like self-preservation.
+The tragic irony: impostor syndrome is supposed to be feeling like a fraud despite being competent. But if left unchecked, it can actually make you less competent. You start with the feeling of being an impostor, but through this cycle, you can actually become one. Toxic environments don't just make you feel bad—they alter your behaviour in ways that confirm the negative beliefs you've developed.
 
-Let me be specific about what this looked like: I started taking longer on tasks that should have been straightforward. I procrastinated on challenging work because I was paralysed by the fear of getting it wrong. I stopped suggesting ideas in meetings because I assumed they'd be shot down anyway. I wrote defensive code, focusing more on covering my tracks than on elegant solutions. I became the engineer I feared I was.
+If you notice your performance declining with your confidence, you're likely in this cycle. The solution isn't to try harder in the same environment; it's to change something fundamental. Sometimes that's therapy, a new team, or a new job entirely.
 
-The tragic irony is that impostor syndrome is supposed to be about feeling like a fraud despite being competent. But if left unchecked in a toxic environment, it can actually make you less competent, turning the fear into reality. You start with the feeling of being an impostor, but through this vicious cycle, you can actually become one. Not because you lack the fundamental ability, but because the environment has systematically destroyed your capacity to access and demonstrate that ability.
-
-This is why toxic environments are so dangerous. They don't just make you feel bad; they can actually alter your behaviour in ways that confirm the negative beliefs you've developed. And then, when you're eventually let go or quit, you leave believing that the problem was you all along. You have "evidence" that you weren't good enough, not recognising that the evidence was manufactured by the environment itself.
-
-Recognising this pattern is crucial. If you notice your performance declining in lockstep with your confidence, you're likely in this cycle. If you find yourself avoiding challenges you would have once embraced, procrastinating more, or feeling a sense of learned helplessness, these are warning signs. The solution isn't to try harder in the same environment; it's to break the cycle by changing something fundamental about your situation. Sometimes that's therapy, sometimes it's a new team, sometimes it's a new job entirely. But staying in the same toxic environment and expecting different results is futile.
+---
 
 ### 4. Experience and Knowledge Gaps Are Different Things
 
-Someone who built a system will always have more context than someone new to it. This is a knowledge gap, not a competence gap. A good team understands this distinction. A toxic team treats knowledge gaps as if they're competence gaps.
+Someone who built a system will always have more context than someone new to it. This is a knowledge gap, not a competence gap. A good team understands this distinction; a toxic team treats knowledge gaps as if they're competence gaps.
 
-This distinction is absolutely critical. If you join a team and don't understand their custom-built infrastructure and libraries, that's not a sign you're a bad engineer. It's a sign you're new. If you don't immediately grasp the domain-specific terminology they've used for years, that's not incompetence. It's inexperience with that specific domain.
+> A knowledge gap is about context you haven't had access to. A competence gap is about fundamental skills. These are different problems requiring completely different approaches.
 
-Knowledge gaps close with time and good documentation. Competence gaps require fundamental skill development. The two require completely different approaches. When I was struggling on that team, my colleagues had years of context about systems they had built. Of course I didn't have that context. I couldn't have that context. No amount of innate talent would have given me knowledge of decisions made before I joined, architectural choices from years prior, or domain concepts they'd internalised over time.
+If you don't understand your team's custom infrastructure or domain-specific terminology, that's not incompetence—it's inexperience with that domain. Knowledge gaps close with time and documentation; competence gaps require fundamental skill development. A healthy team actively works to close knowledge gaps through documentation and patient explanations. A toxic team uses knowledge gaps as weapons, making you feel stupid for not knowing things you couldn't possibly know.
 
-Here's a concrete example: when I asked why a particular service used a specific messaging pattern, I wasn't asking because I didn't understand messaging patterns in general. I was asking about the specific context and constraints that led to that particular choice in that particular system. That's a knowledge gap about institutional history and domain-specific requirements, not a competence gap in my understanding of distributed systems.
+If you're being made to feel incompetent for lacking context you've never had access to, that's a red flag about the team, not about you. If you're expected to intuit decisions made before you joined or understand undocumented systems through osmosis, that's a failure of knowledge management, not your intelligence.
 
-But the response I received treated it as the latter. The frustration implied: "How can you not know this?" The answer was simple: because I wasn't there when the decision was made, I hadn't read the (non-existent) documentation about it, and I hadn't been given context about the specific business constraints that drove that architectural choice.
-
-A healthy team actively works to close knowledge gaps through documentation, patient explanations, and knowledge sharing. They recognise that every question about institutional knowledge is an opportunity to improve their documentation and onboarding. They understand that if someone is repeatedly asking questions about the same domain, the problem isn't the person; it's the lack of accessible knowledge transfer mechanisms.
-
-A toxic team uses knowledge gaps as weapons, making you feel stupid for not knowing things you couldn't possibly know. They confuse tenure with competence, acting as if time spent in the codebase is a measure of engineering ability rather than simply a measure of exposure to that specific context.
-
-If you're being made to feel incompetent for lacking context you've never had access to, that's a red flag about the team, not about you. If you're expected to intuit decisions made before you joined or understand undocumented systems through osmosis, that's a failure of knowledge management, not a failure of your intelligence.
+---
 
 ### 5. Sometimes You Need to Walk Away
 
-Not every job is worth saving. Not every team is worth the mental health toll. Sometimes the bravest thing you can do is recognise when an environment is fundamentally toxic and leave.
+We're often told to persevere and prove ourselves. But staying in a toxic environment isn't brave; it's self-destructive. There's a difference between a challenging role that stretches your abilities and a toxic role that destroys your confidence.
 
-We're often told to persevere, to stick it out, to prove ourselves. There's a cultural narrative that leaving a difficult job is giving up or admitting defeat. But staying in a toxic environment isn't brave; it's self-destructive. There's a difference between a challenging role that stretches your abilities and a toxic role that destroys your confidence.
+> Walking away isn't failure. It's recognizing that your mental health, your confidence, and your career trajectory are more valuable than any single job. Toxic environments are structural problems you can't fix individually.
 
-I stayed far longer than I should have because I thought leaving would prove I was the impostor I feared I was. I thought if I could just work hard enough, learn fast enough, be good enough, things would improve. But toxic environments don't improve just because you try harder. In fact, the harder you try in a fundamentally broken environment, the more damage it does.
+I stayed far longer than I should have, believing that if I worked harder things would improve. But toxic environments don't improve just because you try harder. Watch for the signs: Are you dreading work every day? Have you stopped learning because you're too anxious to try new things? Are you experiencing physical stress symptoms?
 
-Here's what I wish someone had told me earlier: toxic environments are structural problems, not personal challenges to overcome. You cannot individually fix a broken team culture through sheer effort. You cannot make someone respect you by working harder if they've already decided not to respect you. You cannot create psychological safety for yourself in an environment that fundamentally lacks it.
+Your career is long. One toxic job is a blip. Sometimes the most professional thing you can do is recognise when a situation is untenable and make a strategic exit.
 
-The signs that it's time to leave aren't always obvious. It's not just about dramatic incidents or clear-cut abuse. Sometimes it's subtler. Are you dreading work every day? Have you stopped learning because you're too anxious to try new things? Do you find yourself constantly second-guessing decisions that you'd make confidently elsewhere? Are you experiencing physical symptoms of stress: trouble sleeping, anxiety, difficulty concentrating outside of work? These are your body and mind telling you something important.
-
-In hindsight, being let go was a blessing. I was too deep in the cycle of self-doubt to recognise that I needed to leave. I thought if I just tried harder, if I just proved myself enough, things would change. They wouldn't have. The environment was fundamentally broken, and no amount of individual effort would have fixed that.
-
-Walking away isn't failure. It's recognising that your mental health, your confidence, and your career trajectory are more valuable than any single job. It's understanding that you can't grow in soil that's poisoned. Some of the best career decisions I've made involved recognising when a situation was unsalvageable and having the courage to leave.
-
-If you're in an environment that's destroying you, leaving isn't giving up. It's choosing yourself. And that is absolutely something that I believe is far more than just "okay". It's necessary. It's self-preservation. It's recognising that you deserve better, even if the current environment has convinced you that you don't.
-
-Your career is long. One toxic job is a blip. But the damage it does to your confidence and mental health can last far longer if you let it. Sometimes the most professional thing you can do is recognise when a situation is untenable and make a strategic exit.
+---
 
 ### 6. You Learn More Than You Realise
 
-Even in difficult situations, you're learning. I didn't realise how much I'd absorbed about microservices, event-driven architectures, and advanced system design until I was in an environment where I could actually apply that knowledge confidently.
+Even in difficult situations, you're learning. Your brain absorbs information even when you feel like you're drowning, even when you think you're failing. I genuinely believed I'd wasted months learning nothing. I was wrong.
 
-This is perhaps the most hopeful lesson. Even when you feel like you're drowning, even when you think you're failing, even when impostor syndrome has convinced you that you're learning nothing, your brain is still absorbing information. You're building pattern recognition. You're developing problem-solving strategies. You're accumulating technical knowledge, even if you can't access it effectively in a high-stress environment.
+> Your brain was learning, but the environment was preventing you from accessing that learning effectively. It's like having files on your computer that you can't open because the application is corrupted. The data is intact, but you can't access it.
 
-I genuinely believed I had wasted all that time learning nothing. I was wrong. Within weeks of starting my next role, I found myself confidently discussing concepts that had seemed impossible before. I was implementing patterns I thought I'd failed to understand. The knowledge was there; it had just been locked away behind layers of anxiety and self-doubt.
+Within weeks of starting my next role in an environment where I could apply knowledge confidently, I found myself architecting event-driven systems and applying CQRS patterns without constantly second-guessing myself. The knowledge was there—it had just been locked away behind anxiety and self-doubt.
 
-I remember the first time I architected an event-driven system in my next role. I designed the message contracts, set up the pub/sub infrastructure, implemented the domain models, all without constantly second-guessing myself. My manager was impressed. I was shocked. When had I learnt to do this? The answer was: during those painful months when I thought I was failing.
+Trust that even in the worst situations, you're growing. Your struggle wasn't wasted. Every code review, every difficult conversation, every technical challenge was building your skills. The learning happened; it just couldn't flourish until the conditions were right.
 
-The same thing happened with Domain-Driven Design. I found myself naturally thinking in terms of bounded contexts, aggregates, and domain events. I was applying CQRS patterns without having to constantly refer to documentation. The concepts that had seemed so opaque before were now intuitive. Not because I'd studied them intensively after leaving, but because I had absorbed them during my time in that environment, even though I didn't realise it at the time.
-
-Toxic environments don't just make you feel incompetent; they actively prevent you from recognising and demonstrating your competence. The knowledge is often there, buried under stress and fear. Once you remove the environment, you'll likely be surprised by how much you actually learnt.
-
-Think of it like this: your brain was learning, but the environment was preventing you from accessing that learning effectively. It's like having files on your computer that you can't open because the application is corrupted. The data is there, intact and complete, but you can't access it. Change the environment, and suddenly you can access everything you've learnt.
-
-Trust that even in the worst situations, you're growing. The growth might not be visible until you're somewhere that allows you to demonstrate it, but it's happening. Your struggle wasn't wasted, even if it felt like it at the time. Every code review, every difficult conversation, every technical challenge was building your skills, even if you couldn't see it through the fog of anxiety and self-doubt.
-
-This is why I don't regret that experience, as painful as it was. I mean it nearly destroyed my career and it took months to rebuild my confidence. But it also gave me technical knowledge that accelerated my career trajectory once I was in an environment where I could actually use it. The learning happened; it just couldn't flourish until the conditions were right.
+</details>
 
 ## To Anyone Currently Struggling
 
