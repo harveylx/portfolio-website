@@ -30,7 +30,7 @@ tags:
 
 **The Fix:**
 
-1. Made Onward's `AddDbContext` idempotent (check for existing interceptors before adding)
+1. Made our Outbox library's `AddDbContext` idempotent (check for existing interceptors before adding)
 2. Added deduplication with `HashSet<Guid>` instead of `List<Guid>`
 
 **The Lesson:** Sometimes the simplest explanation (double registration) is the right one. I just won't find it until I've eliminated all the complex ones. Also: stack traces can be misleading when I'm making wrong assumptions.
@@ -175,27 +175,23 @@ Next, I wondered if EF Core's transaction handling was causing multiple intercep
 public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(...)
 {
     var depth = new StackTrace().FrameCount;
-    var interceptorHash = RuntimeHelpers.GetHashCode(this).ToString("X8");
-
     _logger.LogWarning(
-        "[ONWARD] SavingChangesAsync ENTRY - Interceptor #{hash}, Depth: {depth}",
-        interceptorHash, depth);
+        "[ONWARD] SavingChangesAsync ENTRY - Depth: {depth}", depth);
 
     // ... existing logic ...
 
     _logger.LogWarning(
-        "[ONWARD] SavingChangesAsync EXIT - Interceptor #{hash}, Depth: {depth}",
-        interceptorHash, depth);
+        "[ONWARD] SavingChangesAsync EXIT - Depth: {depth}", depth);
 }
 ```
 
-### The Revelation: Multiple Calls, Same Interceptor
+### The Revelation: Multiple Interceptor Calls
 
 ```mermaid
 sequenceDiagram
     participant App as Application
     participant EF as EF Core
-    participant Int as Interceptor #4<br/>(Hash: 00736C33)
+    participant Int as Interceptor
     participant List as _added List
 
     App->>EF: SaveChangesAsync()
@@ -207,11 +203,11 @@ sequenceDiagram
     Note over List: Count = 1 ✓
     Int-->>EF: Return
 
-    Note over EF,Int: Second SavingChangesAsync()<br/>(Same interceptor, same context, same depth!)
+    Note over EF,Int: Second SavingChangesAsync()
 
     EF->>Int: SavingChangesAsync() — Call 2, Depth 1
     Note over Int: Extracts 0 new events<br/>Event still in ChangeTracker
-    Int->>List: Add same ID: 9affe28b
+    Int->>List: Add ID: 9affe28b
     Note over List: Count = 2 ⚠️ Duplicate
     Int-->>EF: Return
 
@@ -220,38 +216,38 @@ sequenceDiagram
     EF->>Int: SavedChangesAsync()
     Int->>Int: Processes both events ❌ Duplicate handling
 
-    Note over App,List: Why is the same interceptor<br/>invoked twice at depth 1?
+    Note over App,List: Why are there two calls?
 ```
 
 Running the integration tests produced this output:
 
 ```
-📝 [ONWARD] SavingChangesAsync ENTRY - Interceptor #4 (Hash: 00736C33), Depth: 1
+📝 [ONWARD] SavingChangesAsync ENTRY, Depth: 1
 info: Extracted 1 events from entities
 warn: Found 1 new Event entities to add to _added list
 info: → Event ID: 9affe28b-e623-40f6-aa96-eb0a5eacf782
 warn: _added list now contains: 1 items
-📝 [ONWARD] SavingChangesAsync EXIT - Interceptor #4, Depth: 1
+📝 [ONWARD] SavingChangesAsync EXIT, Depth: 1
 
-📝 [ONWARD] SavingChangesAsync ENTRY - Interceptor #4 (Hash: 00736C33), Depth: 1
+📝 [ONWARD] SavingChangesAsync ENTRY, Depth: 1
 info: Extracted 0 events from entities    ← NO NEW DOMAIN EVENTS
 warn: Found 1 new Event entities to add to _added list
 info: → Event ID: 9affe28b-e623-40f6-aa96-eb0a5eacf782  ← SAME EVENT ID
 warn: _added list now contains: 2 items   ← DUPLICATE!
-📝 [ONWARD] SavingChangesAsync EXIT - Interceptor #4, Depth: 1
+📝 [ONWARD] SavingChangesAsync EXIT, Depth: 1
 
-✅ [ONWARD] SavedChangesAsync ENTRY - Interceptor #4 (Hash: 00736C33)
+✅ [ONWARD] SavedChangesAsync ENTRY
 warn: Processing 2 items...
 warn: 🎯 Processing event 1/2: 9affe28b-e623-40f6-aa96-eb0a5eacf782
 warn: 🎯 Processing event 2/2: 9affe28b-e623-40f6-aa96-eb0a5eacf782  ← DUPLICATE PROCESSING!
-✅ [ONWARD] SavedChangesAsync EXIT - Interceptor #4
+✅ [ONWARD] SavedChangesAsync EXIT
 ```
 
-**Key Observation:** The same interceptor instance (Hash: 00736C33) was being called twice at the same stack depth.
+**Key Observation:** The interceptor was being invoked twice at the same stack depth, both times accumulating the same event ID into the `_added` list.
 
 ### Testing With DetectChanges
 
-I theorized that calling `context.AddRange()` inside the interceptor might trigger EF Core to re-run the save pipeline. I tested by disabling automatic change detection:
+I theorised that calling `context.AddRange()` inside the interceptor might trigger EF Core to re-run the save pipeline. I tested by disabling automatic change detection:
 
 ```csharp
 var autoDetectChangesEnabled = context.ChangeTracker.AutoDetectChangesEnabled;
@@ -285,23 +281,77 @@ Call 1 & Call 2 both showed:
   Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync
 ```
 
-**New theory:** Maybe `NpgsqlExecutionStrategy` is retrying the operation?
+**New theory:** The execution strategy must be retrying `SaveChangesAsync`.
 
-Execution strategies in EF Core handle transient failures by retrying operations. I thought:
+I pulled up the Npgsql source code to understand what was happening under the hood.
 
-1. Maybe `NpgsqlExecutionStrategy` is retrying `SaveChangesAsync`
-2. Each retry would call `SavingChangesAsync` again
-3. Our interceptor doesn't clear state between retries
-4. Result: duplicate event processing
+### Reading the Source Code
 
-I checked the DbContext configuration and found we didn't have `EnableRetryOnFailure()` configured. Plus, even if we did, retries only happen on **transient failures**, and the tests were **succeeding** (kinda) with no errors.
+Here's what `NpgsqlExecutionStrategy.ExecuteAsync` actually does:
+
+```csharp
+public virtual async Task<TResult> ExecuteAsync<TState, TResult>(
+    TState state,
+    Func<DbContext, TState, CancellationToken, Task<TResult>> operation,
+    Func<DbContext, TState, CancellationToken, Task<ExecutionResult<TResult>>>? verifySucceeded,
+    CancellationToken cancellationToken)
+{
+    try
+    {
+        return await operation(Dependencies.CurrentContext.Context, state, cancellationToken)
+            .ConfigureAwait(false);
+    }
+    catch (Exception ex) when (ExecutionStrategy.CallOnWrappedException(ex, NpgsqlTransientExceptionDetector.ShouldRetryOn))
+    {
+        throw new InvalidOperationException(
+            "An exception has been raised that is likely due to a transient failure.", ex);
+    }
+}
+```
+
+And the synchronous `Execute` method:
+
+```csharp
+public virtual TResult Execute<TState, TResult>(
+    TState state,
+    Func<DbContext, TState, TResult> operation,
+    Func<DbContext, TState, ExecutionResult<TResult>>? verifySucceeded)
+{
+    try
+    {
+        return operation(Dependencies.CurrentContext.Context, state);
+    }
+    catch (Exception ex) when (ExecutionStrategy.CallOnWrappedException(ex, NpgsqlTransientExceptionDetector.ShouldRetryOn))
+    {
+        throw new InvalidOperationException(
+            "An exception has been raised that is likely due to a transient failure.", ex);
+    }
+}
+```
+
+**What this revealed:**
+
+The execution strategy is just a generic wrapper. It:
+
+1. Takes a delegate (`operation`) representing any database operation
+2. Invokes it exactly once
+3. Catches exceptions and checks if they're transient
+4. Re-throws if they are, otherwise returns the result
+
+It doesn't know what operation it's wrapping. It could be a query, a command, an update, a delete, or a `SaveChangesAsync` call. It doesn't matter. It's completely operation-agnostic.
+
+The fact that `NpgsqlExecutionStrategy.ExecuteAsync` appeared in both stack traces simply meant "EF Core wrapped a database operation here". It told me nothing about whether anything was retrying or why it was being called twice.
+
+But that still didn't explain why the interceptor was being called twice...
 
 ### Dead End #3
 
 After a full day investigating execution strategies:
 
-- ✅ Understood how EF Core execution strategies work
-- ✅ Confirmed we weren't using retry logic
+- ✅ Read the actual source code and understood the architecture
+- ✅ Confirmed the strategy is a generic operation wrapper, not specific to `SaveChangesAsync`
+- ✅ Confirmed it doesn't implement retry logic (just detects transient errors)
+- ✅ Proved it executes operations exactly once
 - ❌ Still had no explanation for duplicate interceptor calls
 
 **Current Status:** Three days in, three dead ends. I was exhausted and running out of ideas.
@@ -349,19 +399,13 @@ The wild theory was true. Not shared across scopes. Just... registered twice.
 
 ### Finding the Root Cause
 
-The problem was in how we set up our integration tests. Here's what happened:
+The problem was in how we set up our integration tests. At first glance, the logic seemed perfectly reasonable.
 
 **Step 1: Production Startup** (`Program.cs`)
 
 ```csharp
 services.AddShoppingCartContext(() => connectionString);
 ```
-
-This calls Onward's `AddDbContext`, which internally registers:
-
-- `DbContext`
-- `DbContextOptions`
-- `IDbContextOptionsConfiguration<ShoppingCartContext>` (hidden!)
 
 **Step 2: Test Setup** (WebApplicationFactory)
 
@@ -375,11 +419,29 @@ protected override void ConfigureTestServices(IServiceCollection services)
 }
 ```
 
-The problem: **`RemoveAll` doesn't remove `IDbContextOptionsConfiguration<TContext>`!**
+The logic seemed sound: when you call `AddDbContext`, you're registering two main services: the `DbContext` and its `DbContextOptions`. So to replace them with our `TestContainer`, we remove those two types and re-register with test configuration. Clean. Simple. Right?
 
-So when we call `AddShoppingCartContext` again, EF Core registers a second configuration, and now there are TWO. When `DbContextOptions` are resolved, both configurations run, and both add interceptors.
+**Wrong.**
 
-The result: Two interceptor instances, each with its own `_added` list, both processing the same event.
+### The Hidden Service
+
+When I dug into EF Core's AddDbContext implementation, I discovered it registers a third service that's completely invisible to casual inspection:
+
+**`IDbContextOptionsConfiguration<ShoppingCartContext>`**
+
+This is an internal service that EF Core uses to wrap your options lambda. When `DbContextOptions` are resolved, EF Core internally iterates through all registered `IDbContextOptionsConfiguration<TContext>` instances and calls them. This is where the interceptors get added.
+
+Here's the problem:
+
+1. Production startup calls `AddDbContext`, which registers `IDbContextOptionsConfiguration<ShoppingCartContext>` (v1)
+2. Test setup removes `DbContext` and `DbContextOptions` types (but NOT the configuration)
+3. Test setup calls `AddDbContext` again, which registers a SECOND `IDbContextOptionsConfiguration<ShoppingCartContext>` (v2)
+4. Now there are TWO configurations in the service collection
+5. When `DbContextOptions` are resolved, both configurations execute
+6. Both add their own instances of the interceptors
+7. Result: duplicate interceptors, duplicate event processing
+
+The removal looked like it worked because we removed the visible services. But the hidden configuration service lingered in the container, waiting to cause trouble.
 
 ### Why This Was So Hard to Find
 
@@ -406,9 +468,8 @@ graph TB
 
     subgraph "Resilience"
         R1[Use HashSet instead of List for _added]
-        R2[Deduplicate in GetAddedEventIds]
-        RR[✅ Avoids extraction of duplicate events]
-        R1 --> R2 --> RR
+        RR[✅ Prevents duplicate event processing]
+        R1 --> RR
     end
 
     Problem --> Prevention
@@ -453,9 +514,9 @@ void OptionsActionOverride(IServiceProvider sp, DbContextOptionsBuilder builder)
 2. Only adds an interceptor if one of that type doesn't already exist
 3. Makes Onward's `AddDbContext` idempotent - safe to call multiple times
 
-### Approach 2: Implement Deduplication (Defensive)
+### Approach 2: Use HashSet for Deduplication (Defensive)
 
-Even with the configuration fix, I added deduplication to make the interceptor resilient:
+Even with the configuration fix, I added defensive deduplication to make the interceptor resilient to configuration mistakes:
 
 ```csharp
 public class SaveChangesInterceptor<TContext> : ISaveChangesInterceptor
@@ -467,16 +528,17 @@ public class SaveChangesInterceptor<TContext> : ISaveChangesInterceptor
         return context.ChangeTracker.Entries()
             .Where(x => x.Entity.GetType() == typeof(Event) && x.State == EntityState.Added)
             .Select(entry => ((Event)entry.Entity).Id)
-            .Where(id => !_added.Contains(id))  // ← Deduplication
             .ToList();
     }
 }
 ```
 
+The `HashSet<Guid>` automatically prevents duplicates when items are added to it. No extra filtering needed.
+
 **Why both solutions?**
 
 - **Prevention:** Fixes the root cause. No duplicate interceptors = no duplicate processing.
-- **Resilience:** Protects against future configuration mistakes and unexpected edge cases.
+- **Resilience:** Using a HashSet protects against future configuration mistakes and unexpected edge cases where multiple interceptor instances might slip through.
 
 ## What I Learned
 
