@@ -19,33 +19,33 @@ tags:
 
 **The Bug:** Domain events in EF Core integration tests were being processed twice.
 
-**The Investigation:** We spent 4 days testing wild theories:
+**The Investigation:** I spent 4 days testing wild theories:
 
 - ❌ Transient DbContext causing interceptor sharing
 - ❌ Transaction lifecycle calling interceptors twice
 - ❌ ChangeTracker.DetectChanges re-entrancy
 - ❌ NpgsqlExecutionStrategy retrying operations
 
-**The Truth:** `WebApplicationFactory` was registering the DbContext configuration twice, creating two interceptor instances. We only found it when we stopped assuming and started enumerating what was _actually_ registered.
+**The Truth:** `WebApplicationFactory` was registering the DbContext configuration twice, creating two interceptor instances. I only found it when I stopped assuming and started enumerating what was _actually_ registered in the test setup.
 
 **The Fix:**
 
 1. Made Onward's `AddDbContext` idempotent (check for existing interceptors before adding)
 2. Added deduplication with `HashSet<Guid>` instead of `List<Guid>`
 
-**The Lesson:** Sometimes the simplest explanation (double registration) is the right one. You just won't find it until you've eliminated all the complex ones. Also: stack traces can be misleading when you're making wrong assumptions.
+**The Lesson:** Sometimes the simplest explanation (double registration) is the right one. I just won't find it until I've eliminated all the complex ones. Also: stack traces can be misleading when I'm making wrong assumptions.
 
 ---
 
 ## Introduction
 
-This document chronicles a four-day debugging journey to track down why domain events in our Onward library were being processed twice. What started as a simple "events are duplicating" bug turned into a deep dive through Entity Framework Core's internals, dependency injection scoping, execution strategies, and ultimately led us to an unexpected culprit hiding in the test infrastructure.
+This document chronicles a four-day debugging journey to track down why domain events were being processed twice in an application using the Onward library. What started as a simple "events are duplicating" bug turned into a deep dive through Entity Framework Core's internals, dependency injection scoping, execution strategies, and ultimately led me to an unexpected culprit hiding in the test infrastructure.
 
-**Spoiler:** The issue wasn't where we thought it was. Not even close. We went through four different theories before finding the truth.
+**Spoiler:** The issue wasn't where I thought it was. Not even close. I went through four different theories before finding the truth.
 
 ## Background: The Onward Library
 
-Onward is our implementation of the Transactional Outbox pattern for Entity Framework Core. It works by:
+Onward is an implementation of the Transactional Outbox pattern for Entity Framework Core. It works by:
 
 1. **Extracting domain events** from entities during `SaveChangesAsync`
 2. **Persisting events** to an `Events` table within the same database transaction
@@ -94,7 +94,7 @@ Simple, elegant, and it worked perfectly... until we noticed events were being p
 
 ### Initial Hypothesis: Transient vs Scoped DbContext
 
-Looking at our service registration, we noticed the DbContext was registered as Transient:
+Looking at our service registration, I noticed the DbContext was registered as Transient:
 
 ```csharp
 services.AddDbContext<TContext>(
@@ -114,13 +114,13 @@ Using `ServiceLifetime.Transient` for DbContext is generally considered an anti-
 5. **Transaction Complexity** - Coordinating transactions across multiple context instances becomes problematic
 6. **Memory Pressure** - More frequent allocations and disposals increase GC pressure
 
-The Microsoft documentation explicitly recommends Scoped lifetime for web applications. Even though this wasn't the cause of our bug, it was still a problem that needed fixing.
+The Microsoft documentation explicitly recommends Scoped lifetime for web applications. Even though this wasn't the cause of the bug, it was still a problem that needed fixing.
 
-**Our first theory:** Maybe Transient contexts are causing interceptor sharing issues.
+**My first theory:** Maybe Transient contexts are causing interceptor sharing issues.
 
 ### The "Fix" That Didn't Fix Anything
 
-We changed the DbContext lifetime to Scoped:
+I changed the DbContext lifetime to Scoped:
 
 ```csharp
 services.AddDbContext<TContext>(
@@ -131,7 +131,7 @@ services.AddDbContext<TContext>(
 
 **Result:** Events still duplicating. 😞
 
-We tested our hypothesis by checking if interceptors were truly isolated per scope:
+I tested my hypothesis by checking if interceptors were truly isolated per scope:
 
 ```csharp
 [Test]
@@ -155,13 +155,13 @@ Different scopes got different interceptor instances. Every time.
 
 ### Dead End #1
 
-After a full day of testing DbContext lifetimes, we had:
+After a full day of testing DbContext lifetimes, I had:
 
 - ✅ Proven that changing from Transient to Scoped didn't fix the issue
 - ✅ Proven interceptors are isolated per scope
 - ❌ Still had no idea why events were duplicating
 
-**However**, we kept the change to `ServiceLifetime.Scoped` anyway. Even though it didn't solve our immediate problem, using Transient for DbContext was a legitimate issue that could cause problems in production. We fixed it preemptively while we were in the area.
+**However**, I kept the change to `ServiceLifetime.Scoped` anyway. Even though it didn't solve my immediate problem, using Transient for DbContext was a legitimate issue that could cause problems in production. I fixed it preemptively while I was in the area.
 
 Time to look elsewhere.
 
@@ -169,7 +169,7 @@ Time to look elsewhere.
 
 ### Hypothesis 2: Transaction Lifecycle and DetectChanges
 
-Next, we wondered if EF Core's transaction handling was causing multiple interceptor invocations. We added extensive logging to trace the execution flow:
+Next, I wondered if EF Core's transaction handling was causing multiple interceptor invocations. I added extensive logging to trace the execution flow:
 
 ```csharp
 public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(...)
@@ -223,7 +223,7 @@ sequenceDiagram
     Note over App,List: Why is the same interceptor<br/>invoked twice at depth 1?
 ```
 
-Running our integration tests produced this output:
+Running the integration tests produced this output:
 
 ```
 📝 [ONWARD] SavingChangesAsync ENTRY - Interceptor #4 (Hash: 00736C33), Depth: 1
@@ -251,7 +251,7 @@ warn: 🎯 Processing event 2/2: 9affe28b-e623-40f6-aa96-eb0a5eacf782  ← DUPLI
 
 ### Testing With DetectChanges
 
-We theorized that calling `context.AddRange()` inside the interceptor might trigger EF Core to re-run the save pipeline. We tested by disabling automatic change detection:
+I theorized that calling `context.AddRange()` inside the interceptor might trigger EF Core to re-run the save pipeline. I tested by disabling automatic change detection:
 
 ```csharp
 var autoDetectChangesEnabled = context.ChangeTracker.AutoDetectChangesEnabled;
@@ -270,7 +270,7 @@ finally
 
 ### Dead End #2
 
-We spent hours reading EF Core source code, trying to understand transaction lifecycle phases and change detection algorithms. We learnt a lot about EF Core internals, but we still couldn't explain why the interceptor was being called twice with identical stack traces.
+I spent hours reading EF Core source code, trying to understand transaction lifecycle phases and change detection algorithms. I learnt a lot about EF Core internals, but I still couldn't explain why the interceptor was being called twice with identical stack traces.
 
 **Current Status:** Two days in, two dead ends.
 
@@ -287,14 +287,14 @@ Call 1 & Call 2 both showed:
 
 **New theory:** Maybe `NpgsqlExecutionStrategy` is retrying the operation?
 
-Execution strategies in EF Core handle transient failures by retrying operations. We thought:
+Execution strategies in EF Core handle transient failures by retrying operations. I thought:
 
 1. Maybe `NpgsqlExecutionStrategy` is retrying `SaveChangesAsync`
 2. Each retry would call `SavingChangesAsync` again
 3. Our interceptor doesn't clear state between retries
 4. Result: duplicate event processing
 
-We checked our DbContext configuration and found we didn't have `EnableRetryOnFailure()` configured. Plus, even if we did, retries only happen on **transient failures**, and our tests were **succeeding** with no errors.
+I checked the DbContext configuration and found we didn't have `EnableRetryOnFailure()` configured. Plus, even if we did, retries only happen on **transient failures**, and the tests were **succeeding** (kinda) with no errors.
 
 ### Dead End #3
 
@@ -304,23 +304,23 @@ After a full day investigating execution strategies:
 - ✅ Confirmed we weren't using retry logic
 - ❌ Still had no explanation for duplicate interceptor calls
 
-**Current Status:** Three days in, three dead ends. We were exhausted and running out of ideas.
+**Current Status:** Three days in, three dead ends. I was exhausted and running out of ideas.
 
 ## Day 4: The Breakthrough
 
 ### A Wild, Desperate Theory
 
-On the morning of day 4, completely out of obvious theories and running on pure desperation, we threw an idea at the wall - one we didn't actually expect to be true:
+On the morning of day 4, completely out of obvious theories and running on pure desperation, I threw an idea at the wall - one I didn't actually expect to be true:
 
 **What if there are TWO interceptors?**
 
-This seemed ridiculous. We'd proven that scopes don't share interceptors. We'd proven no re-entrancy. We'd proven no retry logic. The idea that we'd somehow accidentally registered the interceptor type twice during configuration felt like a Hail Mary theory.
+This seemed ridiculous. I'd proven that scopes don't share interceptors. I'd proven no re-entrancy. I'd proven no retry logic. The idea that we somehow accidentally registered the interceptor type twice during configuration felt like a Hail Mary theory.
 
-But we were out of ideas, so we tested it anyway.
+But I was out of ideas, so I tested it anyway.
 
 ### The Smoking Gun
 
-We added logging to capture ALL interceptor instances:
+I added logging to capture ALL interceptor instances:
 
 ```csharp
 var context = scope.ServiceProvider.GetRequiredService<TestContext>();
@@ -386,7 +386,7 @@ The result: Two interceptor instances, each with its own `_added` list, both pro
 - **The code was split across codebases** - Onward's `AddDbContext` is in a NuGet package, the test setup is in the consuming app
 - **Onward's own tests never showed it** - They don't use `WebApplicationFactory`, so no double registration
 - **`RemoveAll` looked like it worked** - It removed the obvious services, but not the hidden `IDbContextOptionsConfiguration`
-- **The logs were misleading** - We saw what looked like one interceptor being called twice, but it was actually two interceptors called once each
+- **The logs were misleading** - I saw what looked like one interceptor being called twice, but it was actually two interceptors called once each
 - **The stack traces were identical** - Both interceptors were invoked in the same `SaveChangesAsync` call, so of course they had the same trace
 
 For more technical details, see [Appendix A: How EF Core's AddDbContext Works](#appendix-a-how-ef-cores-adddbcontext-works).
@@ -420,7 +420,7 @@ graph TB
 
 ### Approach 1: Prevent Double Registration
 
-We fixed this in the Onward library by making the interceptor registration idempotent:
+I recommended fixing this in the Onward library by making the interceptor registration idempotent:
 
 ```csharp
 void OptionsActionOverride(IServiceProvider sp, DbContextOptionsBuilder builder)
@@ -455,7 +455,7 @@ void OptionsActionOverride(IServiceProvider sp, DbContextOptionsBuilder builder)
 
 ### Approach 2: Implement Deduplication (Defensive)
 
-Even with the configuration fix, we added deduplication to make the interceptor resilient:
+Even with the configuration fix, I added deduplication to make the interceptor resilient:
 
 ```csharp
 public class SaveChangesInterceptor<TContext> : ISaveChangesInterceptor
@@ -478,7 +478,7 @@ public class SaveChangesInterceptor<TContext> : ISaveChangesInterceptor
 - **Prevention:** Fixes the root cause. No duplicate interceptors = no duplicate processing.
 - **Resilience:** Protects against future configuration mistakes and unexpected edge cases.
 
-## What We Learned
+## What I Learned
 
 ### The 7 Key Lessons
 
@@ -607,13 +607,13 @@ The key insight: `WithInterceptors()` doesn't replace, it concatenates. Multiple
 
 ## Conclusion
 
-This investigation taught us more about Entity Framework Core's internals than we ever intended to learn. We explored dependency injection scoping, DbContext options caching, change tracking, transaction lifecycle, and execution strategies.
+This investigation taught me more about Entity Framework Core's internals than I ever intended to learn. I explored dependency injection scoping, DbContext options caching, change tracking, transaction lifecycle, and execution strategies.
 
 All of which turned out to be red herrings.
 
 The actual bug? A simple double registration in test setup code.
 
-**The lesson:** Sometimes the simplest explanation is the right one. But you won't know that until you've eliminated all the complex ones. And sometimes that takes four days, three dead ends, and one desperate wild theory.
+**The lesson:** Sometimes the simplest explanation is the right one. But I won't know that until I've eliminated all the complex ones. And sometimes that takes four days, three dead ends, and one desperate wild theory.
 
 Happy debugging!
 
