@@ -112,13 +112,13 @@ You can be a competent engineer in one setting and feel completely inadequate in
 
 > A toxic environment doesn't just make you feel bad; it actively impairs your ability to function at your best. Conversely, a supportive environment can unlock potential you didn't even know you had.
 
-When you're constantly bracing for negative feedback, your brain shifts into defensive mode. Instead of focusing on problem-solving and learning, you're focused on avoiding criticism. This cognitive load is enormous, leaving little mental bandwidth for actual engineering work. Always factor in context when evaluating your skills: Are you truly struggling, or is your environment making it impossible to succeed?
+When you're constantly bracing for negative feedback, your brain shifts into defensive mode. Instead of focusing on problem-solving and learning, you're focused on avoiding criticism. This cognitive load is enormous, leaving little mental bandwidth for actual engineering work. Always factor in context when evaluating your skills. Are you truly struggling, or is your environment making it impossible to succeed?
 
 ---
 
 ### 2. "It's Okay to Ask Questions" Means Nothing Without Follow-Through
 
-Words are cheap. If a team says it's okay to ask questions but responds with frustration and sighs when you do, they're not creating a psychologically safe environment. The toxicity exists in the subtext—the sighs, tone of voice, and body language that communicate something entirely different from what's being said.
+Words are cheap. If a team says it's okay to ask questions but responds with frustration and sighs when you do, they're not creating a psychologically safe environment. The toxicity exists in the subtext: the sighs, tone of voice, and body language that communicate something entirely different from what's being said.
 
 > Real psychological safety isn't demonstrated in onboarding documents or team charters. It's demonstrated in daily interactions: How do people respond when you don't understand something? Is there patience in their explanations?
 
@@ -128,11 +128,11 @@ In a truly healthy team, when someone asks a question, the first response is cur
 
 ### 3. You Can Become the Impostor
 
-When you internalise the belief that you're not good enough, you can actually start performing below your capabilities. It becomes a self-fulfilling prophecy. I became unreliable, stopped caring, procrastinated on challenging work, and avoided sharing ideas—not because I was inherently bad, but because constant negative feedback had eroded my motivation to the point where self-sabotage felt like self-preservation.
+When you internalise the belief that you're not good enough, you can actually start performing below your capabilities. It becomes a self-fulfilling prophecy. I became unreliable, stopped caring, procrastinated on challenging work, and avoided sharing ideas. Not because I was inherently bad, but because constant negative feedback had eroded my motivation to the point where self-sabotage felt like self-preservation.
 
 > When you believe you're going to fail anyway, your brain starts to protect you by reducing effort. This creates a vicious cycle: reduced effort leads to poorer results, which confirms your belief that you're not good enough.
 
-The tragic irony: impostor syndrome is supposed to be feeling like a fraud despite being competent. But if left unchecked, it can actually make you less competent. You start with the feeling of being an impostor, but through this cycle, you can actually become one. Toxic environments don't just make you feel bad—they alter your behaviour in ways that confirm the negative beliefs you've developed.
+The tragic irony is this: impostor syndrome is supposed to be feeling like a fraud despite being competent. But if left unchecked, it can actually make you less competent. You start with the feeling of being an impostor, but through this cycle, you can actually become one. Toxic environments don't just make you feel bad. They alter your behaviour in ways that confirm the negative beliefs you've developed.
 
 If you notice your performance declining with your confidence, you're likely in this cycle. The solution isn't to try harder in the same environment; it's to change something fundamental. Sometimes that's therapy, a new team, or a new job entirely.
 
@@ -144,7 +144,7 @@ Someone who built a system will always have more context than someone new to it.
 
 > A knowledge gap is about context you haven't had access to. A competence gap is about fundamental skills. These are different problems requiring completely different approaches.
 
-If you don't understand your team's custom infrastructure or domain-specific terminology, that's not incompetence—it's inexperience with that domain. Knowledge gaps close with time and documentation; competence gaps require fundamental skill development. A healthy team actively works to close knowledge gaps through documentation and patient explanations. A toxic team uses knowledge gaps as weapons, making you feel stupid for not knowing things you couldn't possibly know.
+If you don't understand your team's custom infrastructure or domain-specific terminology, that's not incompetence. It's inexperience with that domain. Knowledge gaps close with time and documentation; competence gaps require fundamental skill development. A healthy team actively works to close knowledge gaps through documentation and patient explanations. A toxic team uses knowledge gaps as weapons, making you feel stupid for not knowing things you couldn't possibly know.
 
 If you're being made to feel incompetent for lacking context you've never had access to, that's a red flag about the team, not about you. If you're expected to intuit decisions made before you joined or understand undocumented systems through osmosis, that's a failure of knowledge management, not your intelligence.
 
@@ -152,7 +152,7 @@ If you're being made to feel incompetent for lacking context you've never had ac
 
 ### 5. Sometimes You Need to Walk Away
 
-We're often told to persevere and prove ourselves. But staying in a toxic environment isn't brave; it's self-destructive. There's a difference between a challenging role that stretches your abilities and a toxic role that destroys your confidence.
+We're often told to persevere and prove ourselves. But staying in a toxic environment isn't brave. It's self-destructive. There's a difference between a challenging role that stretches your abilities and a toxic role that destroys your confidence.
 
 > Walking away isn't failure. It's recognizing that your mental health, your confidence, and your career trajectory are more valuable than any single job. Toxic environments are structural problems you can't fix individually.
 
@@ -168,7 +168,7 @@ Even in difficult situations, you're learning. Your brain absorbs information ev
 
 > Your brain was learning, but the environment was preventing you from accessing that learning effectively. It's like having files on your computer that you can't open because the application is corrupted. The data is intact, but you can't access it.
 
-Within weeks of starting my next role in an environment where I could apply knowledge confidently, I found myself architecting event-driven systems and applying CQRS patterns without constantly second-guessing myself. The knowledge was there—it had just been locked away behind anxiety and self-doubt.
+Within weeks of starting my next role in an environment where I could apply knowledge confidently, I found myself architecting event-driven systems and applying CQRS patterns without constantly second-guessing myself. The knowledge was there. It had just been locked away behind anxiety and self-doubt.
 
 Trust that even in the worst situations, you're growing. Your struggle wasn't wasted. Every code review, every difficult conversation, every technical challenge was building your skills. The learning happened; it just couldn't flourish until the conditions were right.
 
