@@ -88,7 +88,7 @@ public class SaveChangesInterceptor<TContext> : ISaveChangesInterceptor
 }
 ```
 
-Simple, elegant, and it worked perfectly... until we noticed events were being processed twice in integration tests.
+Simple, elegant, and it worked perfectly... until I noticed events were being processed twice in integration tests.
 
 ## Day 1: The DbContext Lifetime Rabbit Hole
 
@@ -278,7 +278,7 @@ I spent hours reading EF Core source code, trying to understand transaction life
 
 ### Hypothesis 4: NpgsqlExecutionStrategy
 
-Looking at the stack traces, we noticed:
+Looking at the stack traces, I noticed:
 
 ```
 Call 1 & Call 2 both showed:
